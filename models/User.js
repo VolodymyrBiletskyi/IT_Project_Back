@@ -59,4 +59,5 @@ User.prototype.comparePassword = async function (password) {
   return await bcrypt.compare(password.trim(), this.password.trim());
 };
 
+
 module.exports = User;

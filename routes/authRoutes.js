@@ -1,8 +1,10 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcryptjs");  // Import bcrypt
+const bcrypt = require("bcryptjs");  // Import bcrypt
 const User = require("../models/User");  // Ensure this is the correct import path
 const authenticateToken = require("../middleware/authMiddleware");
+const { deleteUser } = require("../controllers/userController");
+const req = require("express/lib/request");
 
 const router = express.Router();
 
@@ -85,6 +87,6 @@ router.post("/register", async (req, res) => {
     console.error("Error during registration:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
-});
+  });
 
 module.exports = router;

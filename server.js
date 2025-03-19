@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 const User = require("./models/User");  // Import the User model
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 app.get("/users", async (req, res) => {
   try {
