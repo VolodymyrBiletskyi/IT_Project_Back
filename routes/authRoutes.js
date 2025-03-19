@@ -1,6 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");  // Import bcrypt
+// const bcrypt = require("bcryptjs");  // Import bcrypt
 const User = require("../models/User");  // Ensure this is the correct import path
 const authenticateToken = require("../middleware/authMiddleware");
 
