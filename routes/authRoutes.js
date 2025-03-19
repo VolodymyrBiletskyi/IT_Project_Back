@@ -14,6 +14,8 @@ router.get("/protected", authenticateToken, (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("login request received:", {email, password});
+
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
@@ -23,19 +25,24 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
+      console.log("User not found for email:", email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
+    console.log("Stored hashed password in DB:", user.password);
+    console.log("Entered password:", password);
 
     // Compare password
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
+      console.log("Password does not match for user:", user.email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
+    console.log("Password matches for user:", user.email);
 
     // Generate JWT token
     const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
+    console.log("JWT token generated for user:", user.email);
     res.json({ token });
   } catch (err) {
     console.error(err);
@@ -66,12 +73,11 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    console.log("Hashing password...");
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
+    // console.log("Hashing password...");
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(password, salt);
     console.log("Creating user...");
-    const newUser = await User.create({ name, email, password: hashedPassword, role });
+    const newUser = await User.create({ name, email, password, role });
 
     console.log("User created successfully:", newUser);
     res.status(201).json(newUser);
