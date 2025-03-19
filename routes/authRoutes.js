@@ -1,6 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcryptjs");  // Import bcrypt
+const bcrypt = require("bcryptjs");  // Import bcrypt
 const User = require("../models/User");  // Ensure this is the correct import path
 const authenticateToken = require("../middleware/authMiddleware");
 
@@ -86,5 +86,47 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+router.put("/edit", authenticateToken, async (req, res) => {
+  const { name, email, password, role } = req.body;
+  const userId = req.user.id; // Get user ID from token
+
+  console.log("Update profile request for user:", userId);
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update fields if provided
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (role) {
+      const validRoles = ["admin", "doctor", "receptionist", "owner"];
+      if (!validRoles.includes(role)) {
+        return res.status(400).json({ message: "Invalid role provided" });
+      }
+      user.role = role;
+    }
+
+    // Handle password change separately
+    if (password) {
+      console.log("Updating password...");
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    // Save updated user
+    await user.save();
+    console.log("User profile updated successfully:", user);
+
+    res.json({ message: "Profile updated successfully", user });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 
 module.exports = router;
