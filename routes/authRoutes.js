@@ -1,12 +1,19 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const sendgrid = require ("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");  // Import bcrypt
 const User = require("../models/User");  // Ensure this is the correct import path
 const authenticateToken = require("../middleware/authMiddleware");
 const { deleteUser } = require("../controllers/userController");
 const req = require("express/lib/request");
+const mailer = require("../controllers/mailer");
+require("dotenv").config();
+
 
 const router = express.Router();
+
+
 
 // Protected route example
 router.get("/protected", authenticateToken, (req, res) => {
@@ -70,6 +77,7 @@ router.post("/register", async (req, res) => {
     console.log("Checking if email already exists...");
     const existingUser = await User.findOne({ where: { email } });
 
+
     if (existingUser) {
       console.log("Email already exists:", email);
       return res.status(400).json({ message: "Email already exists" });
@@ -82,6 +90,13 @@ router.post("/register", async (req, res) => {
     const newUser = await User.create({ name, email, password, role });
 
     console.log("User created successfully:", newUser);
+    mailer.sendMail({
+      to: newUser.email,
+      subject: "Welcome to the PawCare?",
+      html: "<h1> Your account was created successfully </h1>"
+    }).then ((response) => {
+      console.log("Email sent");
+    });
     res.status(201).json(newUser);
   } catch (err) {
     console.error("Error during registration:", err);
