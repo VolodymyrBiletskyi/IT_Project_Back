@@ -1,7 +1,9 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");  // Import bcrypt
-const User = require("../models/User");  // Ensure this is the correct import path
+const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require('uuid');
+const User = require("../models/User");
+const Pet = require("../models/Pet");
 const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -14,7 +16,7 @@ router.get("/protected", authenticateToken, (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("login request received:", {email, password});
+  console.log("login request received:", { email, password });
 
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -28,6 +30,7 @@ router.post("/login", async (req, res) => {
       console.log("User not found for email:", email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
     console.log("Stored hashed password in DB:", user.password);
     console.log("Entered password:", password);
 
@@ -38,6 +41,7 @@ router.post("/login", async (req, res) => {
       console.log("Password does not match for user:", user.email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
     console.log("Password matches for user:", user.email);
 
     // Generate JWT token
@@ -51,35 +55,47 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { name, email, password, role } = req.body;
-
-  console.log("Received registration request:", { name, email, password, role });
+  const { name, email, password, role, petName, species, breed } = req.body;
 
   if (!name || !email || !password || !role) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const validRoles = ["admin", "doctor", "receptionist", "owner"];
-  if (!validRoles.includes(role)) {
-    return res.status(400).json({ message: "Invalid role. Must be one of: admin, doctor, receptionist, owner" });
+  if (role === "owner" && (!petName || !species || !breed)) {
+    return res.status(400).json({ message: "Pet details are required for owners" });
   }
 
   try {
-    console.log("Checking if email already exists...");
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
-      console.log("Email already exists:", email);
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // console.log("Hashing password...");
-    // const salt = await bcrypt.genSalt(10);
-    // const hashedPassword = await bcrypt.hash(password, salt);
-    console.log("Creating user...");
-    const newUser = await User.create({ name, email, password, role });
+    const newUser = await User.create({
+      id: uuidv4(),
+      name,
+      email,
+      password,
+      role,
+    });
 
-    console.log("User created successfully:", newUser);
+    if (role === "owner") {
+      console.log("Creating pet record...");
+      console.log("Pet model:", Pet);
+
+      await Pet.create({
+        id: uuidv4(),
+        owner_id: newUser.id,  // Use the new user's ID as the owner_id
+        name: petName,
+        species: species,
+        breed: breed,
+      });
+
+
+      console.log("Pet record created.");
+    }
+
     res.status(201).json(newUser);
   } catch (err) {
     console.error("Error during registration:", err);
@@ -87,8 +103,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
 router.put("/edit", authenticateToken, async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, petName, species, breed, age } = req.body;
   const userId = req.user.id; // Get user ID from token
 
   console.log("Update profile request for user:", userId);
@@ -99,7 +116,7 @@ router.put("/edit", authenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update fields if provided
+    // Update user fields if provided
     if (name) user.name = name;
     if (email) user.email = email;
     if (role) {
@@ -120,6 +137,25 @@ router.put("/edit", authenticateToken, async (req, res) => {
     // Save updated user
     await user.save();
     console.log("User profile updated successfully:", user);
+
+    // If the user is an owner, update their pet's details
+    if (user.role === "owner") {
+      const pet = await Pet.findOne({ where: { owner_id: userId } });
+
+      if (pet) {
+        // Update pet fields if provided
+        if (petName) pet.name = petName;
+        if (species) pet.species = species;
+        if (breed) pet.breed = breed;
+        if (age) pet.age = age;
+
+        // Save updated pet
+        await pet.save();
+        console.log("Pet details updated successfully:", pet);
+      } else {
+        console.log("No pet found for this owner.");
+      }
+    }
 
     res.json({ message: "Profile updated successfully", user });
   } catch (err) {
