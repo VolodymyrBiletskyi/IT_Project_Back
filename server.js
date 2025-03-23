@@ -4,7 +4,8 @@ const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const User = require("./models/User");
-const Pet = require("./models/Pet");// Import the User model
+const Pet = require("./models/Pet");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 app.get("/users", async (req, res) => {
   try {

@@ -1,11 +1,17 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+
+const nodemailer = require("nodemailer");
+const sendgrid = require ("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require('uuid');
 const User = require("../models/User");
 const Pet = require("../models/Pet");
 const authenticateToken = require("../middleware/authMiddleware");
-
+const { deleteUser } = require("../controllers/userController");
+const req = require("express/lib/request");
+const mailer = require("../controllers/mailer");
+require("dotenv").config();
 const router = express.Router();
 
 // Protected route example
@@ -15,9 +21,8 @@ router.get("/protected", authenticateToken, (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
-  console.log("login request received:", { email, password });
-
+  console.log("login request received:", {email, password});
+  
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
@@ -96,6 +101,13 @@ router.post("/register", async (req, res) => {
       console.log("Pet record created.");
     }
 
+    mailer.sendMail({
+      to: newUser.email,
+      subject: "Welcome to the PawCare?",
+      html: "<h1> Your account was created successfully </h1>"
+    }).then ((response) => {
+      console.log("Email sent");
+    });
     res.status(201).json(newUser);
   } catch (err) {
     console.error("Error during registration:", err);
