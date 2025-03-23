@@ -3,8 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
+const User = require("./models/User");
+const Pet = require("./models/Pet");
 const userRoutes = require("./routes/userRoutes");
-const User = require("./models/User");  // Import the User model
 
 const app = express();
 
