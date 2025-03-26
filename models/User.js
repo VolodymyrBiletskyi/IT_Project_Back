@@ -30,6 +30,14 @@ const User = sequelize.define("User", {
     type: DataTypes.ENUM("doctor", "receptionist", "owner", "admin"),
     allowNull: false,
   },
+  resetToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resetTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 }, {
   tableName: "users",  // Explicitly set the table name to lowercase
 });

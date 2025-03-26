@@ -11,6 +11,7 @@ const authenticateToken = require("../middleware/authMiddleware");
 const { deleteUser } = require("../controllers/userController");
 const req = require("express/lib/request");
 const mailer = require("../controllers/mailer");
+const { requestPasswordReset, resetPassword } = require("../controllers/authController");
 require("dotenv").config();
 const router = express.Router();
 
@@ -176,5 +177,7 @@ router.put("/edit", authenticateToken, async (req, res) => {
   }
 });
 
+router.post("/reset-password-request",requestPasswordReset);
+router.post("/reset-password",resetPassword);
 
 module.exports = router;
