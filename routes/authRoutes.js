@@ -22,7 +22,6 @@ router.get("/protected", authenticateToken, (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("login request received:", {email, password});
   
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -36,9 +35,6 @@ router.post("/login", async (req, res) => {
       console.log("User not found for email:", email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
-    console.log("Stored hashed password in DB:", user.password);
-    console.log("Entered password:", password);
 
     // Compare password
     const isMatch = await user.comparePassword(password);
@@ -61,9 +57,9 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { name, email, password, role, petName, species, breed } = req.body;
+  const { name, email, phone, password, role, petName, species, breed } = req.body;
 
-  if (!name || !email || !password || !role) {
+  if (!name || !email || !password || !role || !phone) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -82,6 +78,7 @@ router.post("/register", async (req, res) => {
       id: uuidv4(),
       name,
       email,
+      phone,
       password,
       role,
     });
@@ -118,7 +115,7 @@ router.post("/register", async (req, res) => {
 
 
 router.put("/edit", authenticateToken, async (req, res) => {
-  const { name, email, password, role, petName, species, breed, age } = req.body;
+  const { name, email, password, role, petName, species, breed, age, gender, weight } = req.body;
   const userId = req.user.id; // Get user ID from token
 
   console.log("Update profile request for user:", userId);
@@ -161,6 +158,8 @@ router.put("/edit", authenticateToken, async (req, res) => {
         if (species) pet.species = species;
         if (breed) pet.breed = breed;
         if (age) pet.age = age;
+        if (gender) pet.gender = gender;
+        if (weight) pet.weight = weight;
 
         // Save updated pet
         await pet.save();
