@@ -9,6 +9,7 @@ const MedicalRecords = require('./models/MedicalRecords');
 const userRoutes = require("./routes/userRoutes");
 const medicalRecordsRoutes = require("./routes/medicalRecordsRoutes");
 const appointmentRoutes = require('./routes/appointmentRoutes');
+const servicesRoutes = require('./routes/servicesRoutes');
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/pets", medicalRecordsRoutes);
 app.use('/api', appointmentRoutes);
+app.use('/api', servicesRoutes);
 
 app.get("/users", async (req, res) => {
   try {

@@ -9,19 +9,15 @@ const Appointment = sequelize.define('Appointment', {
   },
   pet_id: {
     type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: 'pets',
-      key: 'id',
-    },
+    allowNull: true, // Allow NULL values
   },
   service_id: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: {
-      model: 'services',
-      key: 'id',
-    },
+  },
+  specialist_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
   },
   date: {
     type: DataTypes.DATEONLY,
@@ -34,10 +30,6 @@ const Appointment = sequelize.define('Appointment', {
   status: {
     type: DataTypes.ENUM('Pending', 'Confirmed', 'Canceled'),
     defaultValue: 'Pending',
-  },
-  notes: {
-    type: DataTypes.TEXT,
-    allowNull: true,
   },
 }, {
   tableName: 'appointments',

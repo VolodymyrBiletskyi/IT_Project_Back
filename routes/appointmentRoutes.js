@@ -4,6 +4,7 @@ const authenticateToken = require('../middleware/authMiddleware');
 const Appointment = require('../models/Appointment');
 const Pet = require('../models/Pet');
 const Service = require('../models/Service');
+const Specialist = require('../models/Specialist');
 
 // Middleware to check if the user owns the pet
 async function authorizePetOwner(req, res, next) {
@@ -42,20 +43,32 @@ function generateTimeSlots(date) {
   return slots;
 }
 
-async function isSlotAvailable(date, serviceId, time) {
-  // Ensure time is in the correct format (e.g., "10:00:00")
-  const normalizedTime = new Date(`2000-01-01T${time}`).toISOString().slice(11, 19);
+async function isSlotAvailable(date, specialistId, time) {
+  const normalizedTime = new Date(`2000-01-01T${time}`).toISOString().slice(11, 19); // Convert to "10:00:00"
 
   const bookedAppointments = await Appointment.findOne({
     where: {
       date,
-      service_id: serviceId,
+      specialist_id: specialistId,
       time: normalizedTime,
     },
   });
 
   return bookedAppointments === null;
 }
+
+router.get('/specialists', async (req, res) => {
+  try {
+    const specialists = await Specialist.findAll({
+      attributes: ['id', 'name'],
+    });
+
+    res.json(specialists);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
 
 // GET /api/appointments/available-slots
 // GET /api/appointments/available-slots
@@ -97,36 +110,61 @@ router.get('/appointments/available-slots', [authenticateToken], async (req, res
 });
 
 // POST /api/appointments
-router.post('/appointments', [authenticateToken, authorizePetOwner], async (req, res) => {
-  const { petId, serviceId, date, time, notes } = req.body;
+router.post('/appointments', async (req, res) => {
+  const {
+    fullName,
+    email,
+    phoneNumber,
+    petId, // Optional field
+    species,
+    breed,
+    serviceId,
+    specialistId,
+    date,
+    time,
+  } = req.body;
 
   try {
     // Validate input
-    if (!petId || !serviceId || !date || !time) {
-      return res.status(400).json({ message: "Missing required fields" });
+    if (
+      !fullName ||
+      !email ||
+      !phoneNumber ||
+      !species ||
+      !breed ||
+      !serviceId ||
+      !specialistId ||
+      !date ||
+      !time
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if the selected slot is available
-    const slotAvailable = await isSlotAvailable(date, serviceId, time);
-    if (!slotAvailable) {
-      return res.status(409).json({ message: "Selected slot is not available" });
+    // If petId is provided, validate it
+    if (petId) {
+      const pet = await Pet.findByPk(petId);
+      if (!pet) {
+        return res.status(400).json({ message: "Invalid pet ID" });
+      }
     }
 
     // Create the appointment
     const appointment = await Appointment.create({
-      pet_id: petId,
+      full_name: fullName,
+      email,
+      phone_number: phoneNumber,
+      pet_id: petId, // Optional field
+      species,
+      breed,
       service_id: serviceId,
+      specialist_id: specialistId,
       date,
       time,
-      notes,
     });
 
     res.status(201).json(appointment);
   } catch (err) {
     console.error(err);
-    if (err.name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({ message: "Selected slot is not available" });
-    }
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
