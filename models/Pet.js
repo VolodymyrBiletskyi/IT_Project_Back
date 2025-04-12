@@ -33,11 +33,11 @@ const Pet = sequelize.define("Pet", {
   },
   gender: {
     type: DataTypes.ENUM("male", "female"),
-    allowNull: false,
+    allowNull: true,
   },
   weight: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   tableName: "pets",  // Explicitly set the table name to lowercase
