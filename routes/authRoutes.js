@@ -115,7 +115,7 @@ router.post("/register", async (req, res) => {
 
 
 router.put("/edit", authenticateToken, async (req, res) => {
-  const { name, email, password, role, petName, species, breed, age, gender, weight } = req.body;
+  const { name, email, phone, password, role, petName, species, breed, age, gender, weight } = req.body;
   const userId = req.user.id; // Get user ID from token
 
   console.log("Update profile request for user:", userId);
@@ -129,6 +129,7 @@ router.put("/edit", authenticateToken, async (req, res) => {
     // Update user fields if provided
     if (name) user.name = name;
     if (email) user.email = email;
+    if (phone) user.phone = phone;
     if (role) {
       const validRoles = ["admin", "doctor", "receptionist", "owner"];
       if (!validRoles.includes(role)) {
