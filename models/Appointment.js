@@ -7,9 +7,33 @@ const Appointment = sequelize.define('Appointment', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
+  user_id: {
+    type: DataTypes.UUID,
+    allowNull: true,
+  },
+  full_name: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+  phone_number: {
+    type: DataTypes.STRING(20),
+    allowNull: false,
+  },
   pet_id: {
     type: DataTypes.UUID,
-    allowNull: true, // Allow NULL values
+    allowNull: false,
+  },
+  species: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  breed: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
   },
   service_id: {
     type: DataTypes.UUID,

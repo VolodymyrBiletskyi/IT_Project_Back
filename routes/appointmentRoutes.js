@@ -5,6 +5,7 @@ const Appointment = require('../models/Appointment');
 const Pet = require('../models/Pet');
 const Service = require('../models/Service');
 const Specialist = require('../models/Specialist');
+const User = require('../models/User');
 
 // Middleware to check if the user owns the pet
 async function authorizePetOwner(req, res, next) {
@@ -110,12 +111,12 @@ router.get('/appointments/available-slots', [authenticateToken], async (req, res
 });
 
 // POST /api/appointments
-router.post('/appointments', async (req, res) => {
+router.post('/appointments', [authenticateToken], async (req, res) => {
   const {
     fullName,
     email,
     phoneNumber,
-    petId, // Optional field
+    petId,
     species,
     breed,
     serviceId,
@@ -140,22 +141,50 @@ router.post('/appointments', async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // If petId is provided, validate it
+    // Extract user ID from the authenticated user
+    const user_id = req.user ? req.user.id : null;
+    if (!user_id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    let pet;
     if (petId) {
-      const pet = await Pet.findByPk(petId);
+      // Case 1: Use an existing pet
+      pet = await Pet.findOne({
+        where: { id: petId, user_id }, // Ensure the pet belongs to the user
+      });
+
+      console.log('Authenticated user ID:', user_id);
+      console.log('Pet ID:', petId);
+      console.log('Found pet:', pet);
+
       if (!pet) {
-        return res.status(400).json({ message: "Invalid pet ID" });
+        return res.status(400).json({ message: "Invalid pet ID or pet does not belong to the user",
+          details: {
+            authenticatedUserId: user_id,
+            providedPetId: petId,
+          },
+        });
       }
+    } else {
+      // Case 2: Create a new pet
+      pet = await Pet.create({
+        user_id,
+        name: `${species} (${breed})`, // Generate a default name
+        species,
+        breed,
+      });
     }
 
     // Create the appointment
     const appointment = await Appointment.create({
+      user_id,
       full_name: fullName,
       email,
       phone_number: phoneNumber,
-      pet_id: petId, // Optional field
-      species,
-      breed,
+      pet_id: pet.id,
+      species: pet.species,
+      breed: pet.breed,
       service_id: serviceId,
       specialist_id: specialistId,
       date,
@@ -163,6 +192,42 @@ router.post('/appointments', async (req, res) => {
     });
 
     res.status(201).json(appointment);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.get('/appointments', [authenticateToken], async (req, res) => {
+  try {
+    // Extract user ID from the authenticated user
+    const user_id = req.user ? req.user.id : null;
+    if (!user_id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Fetch appointments for the user
+    const appointments = await Appointment.findAll({
+      where: { user_id }, // Filter by user_id
+      attributes: [
+        'id',
+        'full_name',
+        'email',
+        'phone_number',
+        'pet_id',
+        'species',
+        'breed',
+        'service_id',
+        'specialist_id',
+        'date',
+        'time',
+        'status',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
+
+    res.status(200).json(appointments);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
