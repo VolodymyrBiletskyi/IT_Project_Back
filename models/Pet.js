@@ -25,7 +25,7 @@ const Pet = sequelize.define("Pet", {
   },
   owner_id: {
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: "users",  // Reference the users table
       key: "id",       // Reference the id column
