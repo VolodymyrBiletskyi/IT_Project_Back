@@ -22,6 +22,16 @@ const User = sequelize.define("User", {
       },
     },
   },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      is: {
+        args: /^[0-9]{10,15}$/,
+        msg: "Please provide a valid phone number",
+      },
+    },
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
