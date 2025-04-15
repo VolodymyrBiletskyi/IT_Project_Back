@@ -111,7 +111,7 @@ router.get('/appointments/available-slots', [authenticateToken], async (req, res
 });
 
 // POST /api/appointments
-router.post('/appointments', [authenticateToken], async (req, res) => {
+router.post('/appointments', async (req, res) => {
   const {
     fullName,
     email,
@@ -141,35 +141,17 @@ router.post('/appointments', [authenticateToken], async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Extract user ID from the authenticated user
-    const user_id = req.user ? req.user.id : null;
-    if (!user_id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     let pet;
     if (petId) {
       // Case 1: Use an existing pet
-      pet = await Pet.findOne({
-        where: { id: petId, user_id }, // Ensure the pet belongs to the user
-      });
-
-      console.log('Authenticated user ID:', user_id);
-      console.log('Pet ID:', petId);
-      console.log('Found pet:', pet);
+      pet = await Pet.findByPk(petId);
 
       if (!pet) {
-        return res.status(400).json({ message: "Invalid pet ID or pet does not belong to the user",
-          details: {
-            authenticatedUserId: user_id,
-            providedPetId: petId,
-          },
-        });
+        return res.status(400).json({ message: "Invalid pet ID" });
       }
     } else {
       // Case 2: Create a new pet
       pet = await Pet.create({
-        user_id,
         name: `${species} (${breed})`, // Generate a default name
         species,
         breed,
@@ -178,7 +160,6 @@ router.post('/appointments', [authenticateToken], async (req, res) => {
 
     // Create the appointment
     const appointment = await Appointment.create({
-      user_id,
       full_name: fullName,
       email,
       phone_number: phoneNumber,
