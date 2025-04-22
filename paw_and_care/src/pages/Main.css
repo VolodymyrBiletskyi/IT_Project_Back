@@ -1,0 +1,39 @@
+﻿.ad-container {
+background-image: url("../assets/Лендинги/2202.q702.029.F.m005.c7.veterinary.jpg");
+    color: white;
+    width: 1429px;
+    height: 487px;
+    font-family: Inter;
+    margin: 160px 245px;
+    border-radius: 20px;
+}
+
+.ad-container h1 {
+    font-size: 40px;
+    line-height: 45px;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-family: Inter;
+    padding-top: 87px;
+    padding-left: 131px;
+}
+
+.ad-container p {
+    font-size: 24px;
+    line-height: 25px;
+    color: #FFFFFF;
+    font-weight: 400;
+    font-family: Inter;
+    padding-top: 20px;
+    padding-left: 131px;
+}
+
+.ad-container button {
+    width: 270px;
+    height: 64px;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 600;
+    background: #F05508;
+    margin: 40px 131px;
+}
