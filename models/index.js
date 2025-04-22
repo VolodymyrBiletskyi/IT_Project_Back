@@ -19,8 +19,10 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-User.hasMany(Pet, { foreignKey: 'user_id', onDelete: 'SET NULL' }); // Set user_id to NULL if the user is deleted
-Pet.belongsTo(User, { foreignKey: 'user_id', constraints: false });
+
+User.hasMany(Pet, { foreignKey: 'owner_id', onDelete: 'SET NULL' }); // Set user_id to NULL if the user is deleted
+Pet.belongsTo(User, { foreignKey: 'owner_id', constraints: false });
+
 
 User.hasMany(Appointment, { foreignKey: 'user_id' });
 Appointment.belongsTo(User, { foreignKey: 'user_id' });
