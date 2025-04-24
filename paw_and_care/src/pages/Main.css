@@ -135,10 +135,7 @@ h2{
 }
 
 .dental-care-service {
-
-    background-image:
-            linear-gradient(black, black);
-            url('../assets/Services/Dental.jpg');
+    background-image: url('../assets/Services/Dental.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
