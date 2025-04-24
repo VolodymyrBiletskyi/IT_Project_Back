@@ -1,17 +1,16 @@
 ﻿.header-container {
     width: 1429px;
-    max-width: 100%;
     height: 137px;
-    padding: 0 20px;
-    margin: 0 auto;
+    margin-left: 246px;
 }
 
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 40px;
     font-family: Inter;
+    padding-top: 60px;
+    padding-bottom: 60px;
     background: white;
 }
 
@@ -20,13 +19,11 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-right: 449px;
 }
 
 .logo {
     height: 84px;
     width: 85px;
-    margin-right: 10px;
 }
 
 .brand-name {
@@ -38,22 +35,26 @@
     font-family: Josefin Sans;
 }
 
+.links-container {
+    margin-left: 300px;
+}
+
 .nav-links a {
     font-style: normal;
-    width: 68px;
+    width: auto;
     height: 20px;
     font-weight: 600;
     font-size: 16px;
     line-height: 20px;
-    padding-right: 54px;
     color: black;
     text-decoration: none;
+    margin-left: 85px;
 }
 
 .nav-buttons {
     align-items: center;
     display: flex;
     gap: 50px;
-    padding-right: 10px;
+    justify-content: end;
 }
 

@@ -1,11 +1,32 @@
 ﻿.ad-container {
-background-image: url("../assets/Лендинги/2202.q702.029.F.m005.c7.veterinary.jpg");
+    background-image: url("../assets/Лендинги/2202.q702.029.F.m005.c7.veterinary.jpg");
+    background-color: rgba(0, 0, 0, 0.5); /* black with 50% opacity */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: white;
     width: 1429px;
     height: 487px;
-    font-family: Inter;
-    margin: 160px 245px;
+    font-family: Inter, serif;
+    margin: 220px 245px;
     border-radius: 20px;
+}
+
+.ad-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+.ad-container::before {
+    border-radius: 20px;
+    width: 1429px;
+    height: 487px;
+    margin: 365px 254px;
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* black with 50% opacity */
+    z-index: 0;
 }
 
 .ad-container h1 {
@@ -13,7 +34,7 @@ background-image: url("../assets/Лендинги/2202.q702.029.F.m005.c7.veteri
     line-height: 45px;
     color: #FFFFFF;
     font-weight: 600;
-    font-family: Inter;
+    font-family: Inter, serif;
     padding-top: 87px;
     padding-left: 131px;
 }
@@ -23,8 +44,8 @@ background-image: url("../assets/Лендинги/2202.q702.029.F.m005.c7.veteri
     line-height: 25px;
     color: #FFFFFF;
     font-weight: 400;
-    font-family: Inter;
-    padding-top: 20px;
+    font-family: Inter, serif;
+    margin-top: 19px;
     padding-left: 131px;
 }
 
@@ -35,5 +56,111 @@ background-image: url("../assets/Лендинги/2202.q702.029.F.m005.c7.veteri
     line-height: 20px;
     font-weight: 600;
     background: #F05508;
-    margin: 40px 131px;
+    margin: 20px 131px;
+
 }
+
+h2{
+    font-size: 32px;
+    line-height: 20px;
+    color: #000000;
+    font-weight: 600;
+    font-family: Poppins, serif;
+    margin-top: 200px;
+    text-align: center;
+}
+
+.services-grid {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 60px;
+    margin-left: 247px;
+    margin-right: 247px;
+}
+
+.general-checkup-service {
+    background-image: url("../assets/Services/2149100168.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 464px;
+    height: 264px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    position: relative;
+}
+
+.general-checkup-service p {
+    font-size: 20px;
+    line-height: 20px;
+    color: white;
+    font-weight: 500;
+    font-family: Inter, serif;
+    z-index: 1;
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    left: 25px;
+}
+
+.vaccinations-service {
+    background-image: url("../assets/Services/2147928582.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 464px;
+    height: 264px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    position: relative;
+}
+
+.vaccinations-service p {
+    font-size: 20px;
+    line-height: 20px;
+    color: white;
+    font-weight: 500;
+    font-family: Inter, serif;
+    z-index: 1;
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    left: 25px;
+}
+
+.dental-care-service {
+
+    background-image:
+            linear-gradient(black, black);
+            url('../assets/Services/Dental.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 464px;
+    height: 264px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    position: relative;
+}
+
+.dental-care-service p {
+    font-size: 20px;
+    line-height: 20px;
+    color: white;
+    font-weight: 500;
+    font-family: Inter, serif;
+    z-index: 1;
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    left: 25px;
+}
+
