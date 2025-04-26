@@ -1,0 +1,23 @@
+﻿.white-btn {
+    border-radius: 10px;
+    width: 228px;
+    height: 50px;
+    background-color: white;
+    border: 2px solid #f05a00;
+    color: #F05508;
+    font-weight: 400;
+    font-size: 20px;
+    font-family: Poppins, sans-serif;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.white-btn:hover {
+    color: white;
+    transition: background-color 0.3s ease;
+    background-color: #ED804FEB;
+}
+
+.white-btn:active {
+    background-color: #F05508;
+}
