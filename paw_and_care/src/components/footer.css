@@ -9,12 +9,12 @@
 .footer-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-left: 246px;
 }
 
 .footer-column-one{
     width: 386px;
     height: 295px;
-    margin-left: 149px;
     margin-top: 46px;
     display: flex;
     flex-direction: column;
@@ -25,21 +25,18 @@
     line-height: 100%;
 }
 
-.information-section {
-    margin-left: 146px;
-    font-family: Inter, serif;
-}
-
 .contacts-section ul {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-.contacts-section ul{
     list-style: none;
     padding: 0;
     margin: 0;
+}
+
+.contacts-section ul li img {
+    margin-right: 10px;
+    vertical-align: middle;
 }
 
 .footer-logo {
@@ -78,14 +75,15 @@
 }
 
 .information-section {
+    margin-left: 70px;
     margin-top: 64px;
+    font-family: Inter, serif;
 }
 
 .information-section h4 {
     color: #07A0C3;
     font-weight: 600;
     font-size: 20px;
-    /*margin-bottom: 18px;*/
 }
 
 .information-section ul a{
@@ -107,8 +105,8 @@
 }
 
 .links-section {
+    margin-left: 70px;
     width: 130px;
-    margin-left: 415px;
     margin-top: 64px;
     font-size: 16px;
     font-weight: 500;
@@ -137,7 +135,6 @@
 }
 
 .socials-section {
-    margin-left: 211px;
     margin-top: 80px;
     display: flex;
     flex-direction: column;
@@ -146,7 +143,6 @@
 
 .socials a img {
     height: 24px;
-    margin-right: 10px;
     transition: transform 0.2s ease;
 }
 

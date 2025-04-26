@@ -21,12 +21,12 @@ const Footer = () =>{
           </div>
           <div className="contacts-section">
           <ul>
-            <li><img src={phone} alt={phone}/>  +48 22 123 45 674</li>
-            <li><img src={mail} alt={mail}/>  hello@pawandcare.com</li>
-            <li><img src={location} alt={location}/>  ul. Kwiatowa 12, 60-123 Poznań, Poland</li>
+            <li><img src={phone} alt={phone}/>    +48 22 123 45 674</li>
+            <li><img src={mail} alt={mail}/>    hello@pawandcare.com</li>
+            <li><img src={location} alt={location}/>    ul. Kwiatowa 12, 60-123 Poznań, Poland</li>
             <li>
-              <img src={clock} alt={clock}/>  08:00 – 20:00 <span className="highlight">(Monday - Saturday)</span><br/><br/>
-              <span className="sub-highlight"> <p>    Sunday:</p> Closed / Emergency Appointments Only</span>
+              <img src={clock} alt={clock}/>    08:00 – 20:00 <span className="highlight">(Monday - Saturday)</span><br/><br/>
+              <span className="sub-highlight"> <p>Sunday:</p> Closed / Emergency Appointments Only</span>
             </li>
           </ul>
         </div>
