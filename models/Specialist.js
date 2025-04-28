@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+
 const Specialist = sequelize.define('Specialist', {
   id: {
     type: DataTypes.UUID,
@@ -8,8 +9,24 @@ const Specialist = sequelize.define('Specialist', {
     primaryKey: true,
   },
   name: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(100),
     allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  role: {
+    type: DataTypes.STRING(50),
+    defaultValue: 'doctor',
   },
 }, {
   tableName: 'specialists',
