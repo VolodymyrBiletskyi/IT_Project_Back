@@ -58,7 +58,7 @@ async function isSlotAvailable(date, specialistId, time) {
   return bookedAppointments === null;
 }
 
-router.get('/specialists', async (req, res) => {
+router.get('/all-specialists', async (req, res) => {
   try {
     const specialists = await Specialist.findAll({
       attributes: ['id', 'name'],
@@ -73,7 +73,7 @@ router.get('/specialists', async (req, res) => {
 
 // GET /api/appointments/available-slots
 // GET /api/appointments/available-slots
-router.get('/appointments/available-slots', [authenticateToken], async (req, res) => {
+router.get('/appointments/available-slots', async (req, res) => {
   const { date, serviceId } = req.query;
 
   if (!date || !serviceId) {
@@ -117,6 +117,7 @@ router.post('/appointments', async (req, res) => {
     email,
     phoneNumber,
     petId,
+    petName,
     species,
     breed,
     serviceId,
@@ -152,7 +153,7 @@ router.post('/appointments', async (req, res) => {
     } else {
       // Case 2: Create a new pet
       pet = await Pet.create({
-        name: `${species} (${breed})`, // Generate a default name
+        name: petName,// Generate a default name
         species,
         breed,
       });
@@ -164,6 +165,7 @@ router.post('/appointments', async (req, res) => {
       email,
       phone_number: phoneNumber,
       pet_id: pet.id,
+      pet_name: pet.name,
       species: pet.species,
       breed: pet.breed,
       service_id: serviceId,
@@ -190,12 +192,18 @@ router.get('/appointments', [authenticateToken], async (req, res) => {
     // Fetch appointments for the user
     const appointments = await Appointment.findAll({
       where: { user_id }, // Filter by user_id
+      include: [{
+        model: Specialist,
+        as: 'specialist',
+        attributes: ['id', 'name', 'email'], // Choose what you want to expose
+      }],
       attributes: [
         'id',
         'full_name',
         'email',
         'phone_number',
         'pet_id',
+        'pet_name',
         'species',
         'breed',
         'service_id',
@@ -211,6 +219,66 @@ router.get('/appointments', [authenticateToken], async (req, res) => {
     res.status(200).json(appointments);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.get('/specialist/appointments', [authenticateToken], async (req, res) => {
+  try {
+    // Assuming your authenticateToken middleware now attaches the specialist object to req.user
+    // if the token belongs to a specialist.
+
+    const specialistId = req.user ? req.user.id : null;
+    const userRole = req.user ? req.user.role : null;
+
+    if (!specialistId || userRole !== 'specialist') {
+      return res.status(403).json({ message: "Unauthorized: Not a specialist" });
+    }
+
+    const appointments = await Appointment.findAll({
+      where: {
+        specialist_id: specialistId,
+      },
+      include: [
+        {
+          model: Pet,
+          as: 'pet',
+          attributes: ['id', 'name', 'species', 'breed'],
+        },
+        {
+          model: Service,
+          as: 'service',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: User, // If you want user details
+          as: 'user',
+          attributes: ['id', 'email', 'name'],
+        },
+      ],
+      attributes: [
+        'id',
+        'full_name',
+        'email',
+        'phone_number',
+        'pet_id',
+        'pet_name',
+        'species',
+        'breed',
+        'service_id',
+        'specialist_id',
+        'date',
+        'time',
+        'status',
+        'createdAt',
+        'updatedAt',
+      ],
+      order: [['date', 'ASC'], ['time', 'ASC']],
+    });
+
+    res.status(200).json(appointments);
+  } catch (err) {
+    console.error('Error fetching specialist appointments:', err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
