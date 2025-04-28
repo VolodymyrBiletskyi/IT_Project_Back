@@ -10,6 +10,7 @@ const userRoutes = require("./routes/userRoutes");
 const medicalRecordsRoutes = require("./routes/medicalRecordsRoutes");
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const servicesRoutes = require('./routes/servicesRoutes');
+const { Appointment, Specialist } = require('./models/associations');
 
 
 const app = express();
