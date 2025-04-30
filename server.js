@@ -11,6 +11,8 @@ const medicalRecordsRoutes = require("./routes/medicalRecordsRoutes");
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const servicesRoutes = require('./routes/servicesRoutes');
 const { Appointment, Specialist } = require('./models/associations');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 
 const app = express();
@@ -51,5 +53,51 @@ const startServer = async () => {
     console.error("Unable to connect to the database:", err);
   }
 };
+
+
+// to see the swagger use http://localhost:YOUR_PORT/api-docs
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Vet Clinic API',
+      version: '1.0.0',
+      description: 'API documentation for the Veterinary Clinic System',
+    },
+    servers: [
+      {
+        url: 'http://localhost:' + process.env.PORT,
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter JWT Bearer token **_only_** in the format: `Bearer <token>`'
+        }
+      }
+    },
+    security: [{
+      bearerAuth: []
+    }]
+  },
+  apis: [
+    './userRoutes/*.js',
+    './authRoutes/*.js',
+    './medicalRecordsRoutes/*.js',
+    './servicesRoutes/*.js',
+    './appointmentsRoutes/*.js',
+    './docs/*.js'
+  ],
+};
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Swagger UI по /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
+
 
 startServer();
