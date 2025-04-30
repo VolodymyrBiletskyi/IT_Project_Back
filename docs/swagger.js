@@ -284,7 +284,7 @@
 
 /**
  * @swagger
- * /api/user/pets/{petId}/medical-record:
+ * /api/pets/{petId}/medical-record:
  *   get:
  *     summary: Get a pet's medical record
  *     tags: [Medical Records]
@@ -305,7 +305,7 @@
 
 /**
  * @swagger
- * /api/user/pets/{petId}/medical-record:
+ * /api/pets/{petId}/medical-record:
  *   post:
  *     summary: Create or update a pet's medical record
  *     tags: [Medical Records]
@@ -350,7 +350,7 @@
 
 /**
  * @swagger
- * /api/user/pets/{petId}/medical-record:
+ * /api/pets/{petId}/medical-record:
  *   delete:
  *     summary: Delete a pet's medical record
  *     tags: [Medical Records]
@@ -471,7 +471,7 @@
 
 /**
  * @swagger
- * /api/specialists:
+ * /api/all-specialists:
  *   get:
  *     summary: Get list of specialists
  *     tags: [Appointments]
