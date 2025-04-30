@@ -31,4 +31,16 @@ Appointment.belongsTo(User, {
   as: 'user',
 });
 
+Pet.belongsTo(User, {
+  foreignKey: 'owner_id',
+  as: 'owner'
+});
+
+User.hasMany(Pet, {
+  foreignKey: 'owner_id',
+  as: 'pets' // You can choose an alias for the user's pets
+});
+
+
+
 module.exports = { Appointment, Specialist };
