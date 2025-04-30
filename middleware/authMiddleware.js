@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Specialist = require("../models/Specialist");
 
+
 function authenticateToken(req, res, next) {
   const token = req.header("Authorization")?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "Access denied" });
@@ -24,6 +25,7 @@ function authenticateToken(req, res, next) {
           return res.status(404).json({ message: userRole === 'specialist' ? "Specialist not found" : "User not found" });
         }
         req.user = userOrSpecialist;
+
         next();
       })
       .catch((err) => {
