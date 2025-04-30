@@ -5,9 +5,6 @@ import Footer from '../components/footer';
 import '../assets/Лендинги/155657.jpg';
 import './AboutUs.css';
 import '../assets/SVG/pointer-about-us.svg';
-import Michael from '../assets/Img Docktor/Doktor 3.jpg.jpg'
-import Olivia from '../assets/Img Docktor/Doktor 2.jpg.jpg'
-import David from '../assets/Img Docktor/Doktor 1.jpg.jpg'
 
 const AboutUs = () => {
   return (
