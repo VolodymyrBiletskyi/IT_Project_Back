@@ -11,8 +11,8 @@ const Header = () => {
     <div className="header-container">
     <header className="header">
       <div className="logo-container">
-        <img src={logo} alt="Paw & Care" className="logo" />
-        <span className="brand-name">Paw & Care</span>
+        <Link to="/"><img src={logo} alt="Paw & Care"  className="logo" /></Link>
+        <span className="brand-name"><Link to="/">Paw & Care</Link></span>
       </div>
       <div className="links-container">
       <nav className="nav-links">
