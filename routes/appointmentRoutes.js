@@ -283,4 +283,55 @@ router.get('/specialist/appointments', [authenticateToken], async (req, res) => 
   }
 });
 
+router.patch('/appointments/:appointmentId/status', [authenticateToken], async (req, res) => {
+  const { appointmentId } = req.params;
+  const { status } = req.body; // Expecting { "status": "on time" } or similar
+  const specialistId = req.user.id;
+  const userRole = req.user.role;
+
+  // 1. Authorization: Check if user is a specialist
+  if (userRole !== 'specialist') {
+    return res.status(403).json({ message: "Forbidden: Only specialists can update appointment status." });
+  }
+
+  // 2. Validation: Check if status is provided and valid
+  // Define the statuses you want to allow specialists to set
+  const allowedStatuses = ['pending', 'on time', 'completed', 'cancelled', 'delayed', 'no show'];
+  if (!status) {
+    return res.status(400).json({ message: "Status is required in the request body." });
+  }
+  const lowerCaseStatus = status.toLowerCase(); // Normalize status
+  if (!allowedStatuses.includes(lowerCaseStatus)) {
+    return res.status(400).json({ message: `Invalid status value. Allowed statuses are: ${allowedStatuses.join(', ')}` });
+  }
+
+  try {
+    // 3. Find the appointment
+    const appointment = await Appointment.findByPk(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found." });
+    }
+
+    // 4. Authorization: Check if the appointment belongs to this specialist
+    if (appointment.specialist_id !== specialistId) {
+      // Log this attempt for security monitoring if desired
+      console.warn(`Specialist ${specialistId} attempted to update status for appointment ${appointmentId} belonging to specialist ${appointment.specialist_id}`);
+      return res.status(403).json({ message: "Forbidden: You can only update status for your own appointments." });
+    }
+
+    // 5. Update the status
+    appointment.status = lowerCaseStatus; // Use the normalized status
+    await appointment.save();
+
+    // 6. Respond with success
+    // Optionally include the updated appointment in the response
+    res.json({ message: `Appointment status updated successfully to '${lowerCaseStatus}'.`, appointment });
+
+  } catch (err) {
+    console.error("Error updating appointment status:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 module.exports = router;
