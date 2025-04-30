@@ -27,6 +27,11 @@ const Appointment = sequelize.define('Appointment', {
     type: DataTypes.UUID,
     allowNull: false,
   },
+  pet_name: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+
   species: {
     type: DataTypes.STRING(50),
     allowNull: false,

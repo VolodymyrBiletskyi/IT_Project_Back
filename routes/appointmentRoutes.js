@@ -58,7 +58,9 @@ async function isSlotAvailable(date, specialistId, time) {
   return bookedAppointments === null;
 }
 
-router.get('/specialists', async (req, res) => {
+
+router.get('/all-specialists', async (req, res) => {
+
   try {
     const specialists = await Specialist.findAll({
       attributes: ['id', 'name'],
@@ -73,7 +75,9 @@ router.get('/specialists', async (req, res) => {
 
 // GET /api/appointments/available-slots
 // GET /api/appointments/available-slots
-router.get('/appointments/available-slots', [authenticateToken], async (req, res) => {
+
+router.get('/appointments/available-slots', async (req, res) => {
+
   const { date, serviceId } = req.query;
 
   if (!date || !serviceId) {
@@ -117,6 +121,7 @@ router.post('/appointments', async (req, res) => {
     email,
     phoneNumber,
     petId,
+    petName,
     species,
     breed,
     serviceId,
@@ -152,7 +157,7 @@ router.post('/appointments', async (req, res) => {
     } else {
       // Case 2: Create a new pet
       pet = await Pet.create({
-        name: `${species} (${breed})`, // Generate a default name
+        name: petName,// Generate a default name
         species,
         breed,
       });
@@ -164,6 +169,8 @@ router.post('/appointments', async (req, res) => {
       email,
       phone_number: phoneNumber,
       pet_id: pet.id,
+      pet_name: pet.name,
+
       species: pet.species,
       breed: pet.breed,
       service_id: serviceId,
@@ -190,12 +197,18 @@ router.get('/appointments', [authenticateToken], async (req, res) => {
     // Fetch appointments for the user
     const appointments = await Appointment.findAll({
       where: { user_id }, // Filter by user_id
+      include: [{
+        model: Specialist,
+        as: 'specialist',
+        attributes: ['id', 'name', 'email'], // Choose what you want to expose
+      }],
       attributes: [
         'id',
         'full_name',
         'email',
         'phone_number',
         'pet_id',
+        'pet_name',
         'species',
         'breed',
         'service_id',
@@ -211,6 +224,117 @@ router.get('/appointments', [authenticateToken], async (req, res) => {
     res.status(200).json(appointments);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.get('/specialist/appointments', [authenticateToken], async (req, res) => {
+  try {
+    // Assuming your authenticateToken middleware now attaches the specialist object to req.user
+    // if the token belongs to a specialist.
+
+    const specialistId = req.user ? req.user.id : null;
+    const userRole = req.user ? req.user.role : null;
+
+    if (!specialistId || userRole !== 'specialist') {
+      return res.status(403).json({ message: "Unauthorized: Not a specialist" });
+    }
+
+    const appointments = await Appointment.findAll({
+      where: {
+        specialist_id: specialistId,
+      },
+      include: [
+        {
+          model: Pet,
+          as: 'pet',
+          attributes: ['id', 'name', 'species', 'breed'],
+        },
+        {
+          model: Service,
+          as: 'service',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: User, // If you want user details
+          as: 'user',
+          attributes: ['id', 'email', 'name'],
+        },
+      ],
+      attributes: [
+        'id',
+        'full_name',
+        'email',
+        'phone_number',
+        'pet_id',
+        'pet_name',
+        'species',
+        'breed',
+        'service_id',
+        'specialist_id',
+        'date',
+        'time',
+        'status',
+        'createdAt',
+        'updatedAt',
+      ],
+      order: [['date', 'ASC'], ['time', 'ASC']],
+    });
+
+    res.status(200).json(appointments);
+  } catch (err) {
+    console.error('Error fetching specialist appointments:', err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.patch('/appointments/:appointmentId/status', [authenticateToken], async (req, res) => {
+  const { appointmentId } = req.params;
+  const { status } = req.body; // Expecting { "status": "on time" } or similar
+  const specialistId = req.user.id;
+  const userRole = req.user.role;
+
+  // 1. Authorization: Check if user is a specialist
+  if (userRole !== 'specialist') {
+    return res.status(403).json({ message: "Forbidden: Only specialists can update appointment status." });
+  }
+
+  // 2. Validation: Check if status is provided and valid
+  // Define the statuses you want to allow specialists to set
+  const allowedStatuses = ['pending', 'on time', 'completed', 'cancelled', 'delayed', 'no show'];
+  if (!status) {
+    return res.status(400).json({ message: "Status is required in the request body." });
+  }
+  const lowerCaseStatus = status.toLowerCase(); // Normalize status
+  if (!allowedStatuses.includes(lowerCaseStatus)) {
+    return res.status(400).json({ message: `Invalid status value. Allowed statuses are: ${allowedStatuses.join(', ')}` });
+  }
+
+  try {
+    // 3. Find the appointment
+    const appointment = await Appointment.findByPk(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found." });
+    }
+
+    // 4. Authorization: Check if the appointment belongs to this specialist
+    if (appointment.specialist_id !== specialistId) {
+      // Log this attempt for security monitoring if desired
+      console.warn(`Specialist ${specialistId} attempted to update status for appointment ${appointmentId} belonging to specialist ${appointment.specialist_id}`);
+      return res.status(403).json({ message: "Forbidden: You can only update status for your own appointments." });
+    }
+
+    // 5. Update the status
+    appointment.status = lowerCaseStatus; // Use the normalized status
+    await appointment.save();
+
+    // 6. Respond with success
+    // Optionally include the updated appointment in the response
+    res.json({ message: `Appointment status updated successfully to '${lowerCaseStatus}'.`, appointment });
+
+  } catch (err) {
+    console.error("Error updating appointment status:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });

@@ -14,6 +14,7 @@ const mailer = require("../controllers/mailer");
 const { requestPasswordReset, resetPassword } = require("../controllers/authController");
 require("dotenv").config();
 const router = express.Router();
+const Specialist = require("../models/Specialist");
 
 // Protected route example
 router.get("/protected", authenticateToken, (req, res) => {
@@ -22,39 +23,53 @@ router.get("/protected", authenticateToken, (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
 
   try {
-    // Find user by email
-    const user = await User.findOne({ where: { email } });
+    let userOrSpecialist = await User.findOne({ where: { email } });
+    let userType = "user";
 
-    if (!user) {
-      console.log("User not found for email:", email);
+    if (!userOrSpecialist) {
+      userOrSpecialist = await Specialist.findOne({ where: { email } });
+      userType = "specialist";
+    }
+
+    if (!userOrSpecialist) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Compare password
-    const isMatch = await user.comparePassword(password);
+    let isMatch = false;
+    if (userType === "specialist") {
+      isMatch = await bcrypt.compare(password, userOrSpecialist.password);
+    } else {
+      isMatch = await userOrSpecialist.comparePassword(password);
+    }
 
     if (!isMatch) {
-      console.log("Password does not match for user:", user.email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    console.log("Password matches for user:", user.email);
+    // Generate JWT token based on user type
+    const tokenPayload = {
+      id: userOrSpecialist.id,
+      email: userOrSpecialist.email,
+      role: userOrSpecialist.role, // Now this will be 'specialist' for specialists
+    };
 
-    // Generate JWT token
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    console.log("JWT token generated for user:", user.email);
-    res.json({ token });
+    // Force the role to 'specialist' if the userType is specialist
+    if (userType === 'specialist') {
+      tokenPayload.role = 'specialist';
+    }
+
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    res.json({ token, userType });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 router.post("/register", async (req, res) => {
   const { name, email, phone, password, role, petName, species, breed } = req.body;

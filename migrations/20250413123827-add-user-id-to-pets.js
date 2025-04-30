@@ -5,7 +5,6 @@ module.exports = {
     await queryInterface.changeColumn('pets', 'owner_id', {
       type: Sequelize.UUID,
       allowNull: true, // Allow NULL values
-
     });
   },
 
