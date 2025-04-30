@@ -79,7 +79,9 @@ h2{
 }
 
 .general-checkup-service {
-    background-image: url("../assets/Services/2149100168.jpg");
+    background-image:
+            linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
+            url("../assets/Services/2149100168.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -106,7 +108,9 @@ h2{
 }
 
 .vaccinations-service {
-    background-image: url("../assets/Services/2147928582.jpg");
+    background-image:
+            linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
+            url("../assets/Services/2147928582.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -133,7 +137,9 @@ h2{
 }
 
 .dental-care-service {
-    background-image: url('../assets/Services/Dental.jpg');
+    background-image:
+            linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
+            url('../assets/Services/Dental.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -165,14 +171,11 @@ h2{
 
 .about-us-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
     margin-top: 200px;
     margin-bottom: 200px;
 }
 
 .about-us-content {
-    flex: 1;
     background-color: #086788;
     width: 1920px;
     height: 468px;
@@ -202,16 +205,14 @@ h2{
 }
 
 .about-us-img {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 0;
     height: 400px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 1);
     background: none;
     padding: 0;
-    margin: 0;
+    margin-right: 500px;
 }
 
 .about-us-img img {
