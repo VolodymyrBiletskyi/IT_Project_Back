@@ -13,7 +13,8 @@ function authenticateToken(req, res, next) {
     const userId = decoded.id;
 
     let modelToUse;
-    if (userRole === 'specialist') {
+    if (userRole === 'doctor') {
+
       modelToUse = Specialist;
     } else {
       modelToUse = User;
