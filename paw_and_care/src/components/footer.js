@@ -16,8 +16,8 @@ const Footer = () =>{
       <div className="footer-container">
         <div className="footer-column-one">
           <div className="footer-logo">
-            <img src={logo} alt="Paw & Care" />
-            <span>Paw & Care</span>
+            <Link to="/"><img src={logo} alt="Paw & Care"  className="logo" /></Link>
+            <span><Link to="/">Paw & Care</Link></span>
           </div>
           <div className="contacts-section">
           <ul>

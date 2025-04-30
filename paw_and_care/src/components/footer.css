@@ -57,6 +57,11 @@
     width: 58px;
 }
 
+.footer-logo a {
+    text-decoration: none;
+    color: #e76f00;
+}
+
 .highlight {
     color: #6390B8;
     font-weight: 400;
