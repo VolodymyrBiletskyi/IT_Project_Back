@@ -58,7 +58,9 @@ async function isSlotAvailable(date, specialistId, time) {
   return bookedAppointments === null;
 }
 
+
 router.get('/all-specialists', async (req, res) => {
+
   try {
     const specialists = await Specialist.findAll({
       attributes: ['id', 'name'],
@@ -73,7 +75,9 @@ router.get('/all-specialists', async (req, res) => {
 
 // GET /api/appointments/available-slots
 // GET /api/appointments/available-slots
+
 router.get('/appointments/available-slots', async (req, res) => {
+
   const { date, serviceId } = req.query;
 
   if (!date || !serviceId) {
@@ -166,6 +170,7 @@ router.post('/appointments', async (req, res) => {
       phone_number: phoneNumber,
       pet_id: pet.id,
       pet_name: pet.name,
+
       species: pet.species,
       breed: pet.breed,
       service_id: serviceId,

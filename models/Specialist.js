@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-
-
 const Specialist = sequelize.define('Specialist', {
   id: {
     type: DataTypes.UUID,
@@ -27,6 +25,7 @@ const Specialist = sequelize.define('Specialist', {
   role: {
     type: DataTypes.STRING(50),
     defaultValue: 'doctor',
+
   },
 }, {
   tableName: 'specialists',
