@@ -60,7 +60,9 @@ router.post("/login", async (req, res) => {
 
     // Force the role to 'specialist' if the userType is specialist
     if (userType === 'specialist') {
+
       tokenPayload.role = 'doctor';
+
     }
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: "1h" });

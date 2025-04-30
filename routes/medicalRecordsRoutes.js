@@ -16,6 +16,7 @@ async function authorizeDoctor(req, res, next) {
   // 1. Check Role
   // Ensure 'doctor' is a valid role in your User model ENUM
   if (userRole !== 'doctor' && userRole !== 'specialist') {
+
     return res.status(403).json({ message: "Forbidden: Only doctors can perform this action." });
   }
 

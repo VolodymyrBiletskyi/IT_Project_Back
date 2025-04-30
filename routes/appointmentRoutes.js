@@ -237,6 +237,7 @@ router.get('/specialist/appointments', [authenticateToken], async (req, res) => 
     const userRole = req.user ? req.user.role : null;
 
     if (!specialistId || userRole !== 'doctor' && userRole !== 'specialist') {
+
       return res.status(403).json({ message: "Unauthorized: Not a specialist" });
     }
 
@@ -296,6 +297,7 @@ router.patch('/appointments/:appointmentId/status', [authenticateToken], async (
 
   // 1. Authorization: Check if user is a specialist
   if (userRole !== 'doctor' && userRole !== 'specialist') {
+
     return res.status(403).json({ message: "Forbidden: Only specialists can update appointment status." });
   }
 

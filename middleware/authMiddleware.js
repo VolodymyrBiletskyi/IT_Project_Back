@@ -14,6 +14,7 @@ function authenticateToken(req, res, next) {
 
     let modelToUse;
     if (userRole === 'doctor') {
+
       modelToUse = Specialist;
     } else {
       modelToUse = User;
