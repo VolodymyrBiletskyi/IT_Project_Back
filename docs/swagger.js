@@ -592,3 +592,45 @@
  *       500:
  *         description: Server error
  */
+/**
+ * @swagger
+ * /api/auth/request-account-deletion:
+ *   post:
+ *     summary: Request account deletion
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Request link sent
+ */
+/**
+ * @swagger
+ * /api/auth/confirm-account-deletion:
+ *   delete:
+ *     summary: Delete account and associated pets using token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *             properties:
+ *               token:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ */

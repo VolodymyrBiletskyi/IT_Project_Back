@@ -6,6 +6,7 @@ const Pet = require('../models/Pet');
 const Service = require('../models/Service');
 const Specialist = require('../models/Specialist');
 const User = require('../models/User');
+const mailer = require('../controllers/mailer');
 
 // Middleware to check if the user owns the pet
 async function authorizePetOwner(req, res, next) {
@@ -177,6 +178,27 @@ router.post('/appointments', async (req, res) => {
       specialist_id: specialistId,
       date,
       time,
+    });
+    // Send confirmation email
+    mailer.sendMail({
+      to: email,
+      subject: "Appointment Confirmation - PawCare",
+      html: `
+        <h2>Appointment Confirmed</h2>
+        <p>Dear ${fullName},</p>
+        <p>Your appointment has been successfully scheduled.</p>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Time:</strong> ${time}</p>
+        <p><strong>Pet:</strong> ${pet.name}</p>
+        <p><strong>Species:</strong> ${species}</p>
+        <p><strong>Breed:</strong> ${breed}</p>
+        <p><strong>Service:</strong> ${serviceId}</p>
+        <p>Thank you for choosing PawCare!</p>
+      `
+    }).then(() => {
+      console.log("Appointment confirmation email sent.");
+    }).catch((err) => {
+      console.error("Error sending appointment email:", err);
     });
 
     res.status(201).json(appointment);
