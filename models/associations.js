@@ -41,6 +41,8 @@ User.hasMany(Pet, {
   as: 'pets' // You can choose an alias for the user's pets
 });
 
+Pet.hasMany(Appointment, { foreignKey: 'pet_id' });
+
 
 
 module.exports = { Appointment, Specialist };
