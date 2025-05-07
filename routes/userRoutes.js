@@ -2,8 +2,9 @@ const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const Pet = require('../models/Pet');
+const Appointment = require('../models/Appointment');
+const Specialist = require('../models/Specialist');
 const authenticateToken = require("../middleware/authMiddleware");
-
 const router = express.Router();
 
 async function authorizePetOwner(req, res, next) {
@@ -115,5 +116,40 @@ router.post('/pets', [authenticateToken], async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+const authorizeReceptionist = (req, res, next) => {
+  if (req.user.role !== 'receptionist') {
+    return res.status(403).json({ message: "Access denied. Receptionist role required." });
+  }
+  next();
+};
 
+// Get appointments for a specific specialist
+router.get('/specialists/:specialistId/appointments', [authenticateToken, authorizeReceptionist], async (req, res) => {
+  const { specialistId } = req.params;
+
+  try {
+    const appointments = await Appointment.findAll({
+      where: { specialist_id: specialistId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: Specialist,
+          as: 'specialist',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+      attributes: ['id', 'date', 'time', 'status', 'pet_name', 'species', 'breed'],
+      order: [['date', 'ASC'], ['time', 'ASC']],
+    });
+
+    res.json(appointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
 module.exports = router;

@@ -13,7 +13,7 @@ const servicesRoutes = require('./routes/servicesRoutes');
 const { Appointment, Specialist } = require('./models/associations');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-
+const receptionistRoutes = require('./routes/receptionistRoutes');
 
 const app = express();
 
@@ -27,6 +27,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/pets", medicalRecordsRoutes);
 app.use('/api', appointmentRoutes);
 app.use('/api', servicesRoutes);
+app.use('/api/receptionist', receptionistRoutes);
 
 app.get("/users", async (req, res) => {
   try {

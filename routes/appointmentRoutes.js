@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middleware/authMiddleware');
+const optionalAuthMiddleware = require('../middleware/optionalAuthMiddleware');
 const Appointment = require('../models/Appointment');
 const Pet = require('../models/Pet');
 const Service = require('../models/Service');
@@ -116,69 +117,96 @@ router.get('/appointments/available-slots', async (req, res) => {
 });
 
 // POST /api/appointments
-router.post('/appointments', async (req, res) => {
-  const {
-    fullName,
-    email,
-    phoneNumber,
-    petId,
-    petName,
-    species,
-    breed,
-    serviceId,
-    specialistId,
-    date,
-    time,
-  } = req.body;
-
+router.post('/appointments', optionalAuthMiddleware, async (req, res) => {
   try {
-    // Validate input
-    if (
-      !fullName ||
-      !email ||
-      !phoneNumber ||
-      !species ||
-      !breed ||
-      !serviceId ||
-      !specialistId ||
-      !date ||
-      !time
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
+    const {
+      fullName,
+      email,
+      phoneNumber,
+      petId,
+      petName,
+      species,
+      breed,
+      serviceId,
+      specialistId,
+      date,
+      time
+    } = req.body;
+
+    let userId = null;
+    let user = null;
+
+    // Check if the user is authenticated
+    if (req.user) {
+      userId = req.user.id;
+      user = await User.findByPk(userId);
+    }
+
+    // Validate required fields
+    if (!serviceId || !specialistId || !date || !time) {
+      return res.status(400).json({ message: "All appointment details are required" });
+    }
+
+    // If user is not authenticated, require full name, email, and phone number
+    if (!user && (!fullName || !email || !phoneNumber)) {
+      return res.status(400).json({ message: "Full name, email, and phone number are required for unregistered users" });
+    }
+
+    // Validate pet information
+    if (!petId && (!petName || !species || !breed)) {
+      return res.status(400).json({ message: "Pet information is required" });
     }
 
     let pet;
     if (petId) {
-      // Case 1: Use an existing pet
+      // If petId is provided, fetch the pet details
       pet = await Pet.findByPk(petId);
-
       if (!pet) {
-        return res.status(400).json({ message: "Invalid pet ID" });
+        return res.status(404).json({ message: "Pet not found" });
       }
-    } else {
-      // Case 2: Create a new pet
-      pet = await Pet.create({
-        name: petName,// Generate a default name
-        species,
-        breed,
-      });
+      // If user is logged in, check if the pet belongs to the user
+      if (userId && pet.owner_id !== userId) {
+        return res.status(403).json({ message: "This pet doesn't belong to the user" });
+      }
     }
 
     // Create the appointment
-    const appointment = await Appointment.create({
-      full_name: fullName,
-      email,
-      phone_number: phoneNumber,
-      pet_id: pet.id,
-      pet_name: pet.name,
-
-      species: pet.species,
-      breed: pet.breed,
+    const newAppointment = await Appointment.create({
+      user_id: userId,
+      pet_id: pet ? pet.id : null,
+      full_name: user ? user.name : fullName,
+      email: user ? user.email : email,
+      phone_number: user ? user.phone : phoneNumber,
+      pet_name: pet ? pet.name : petName,
+      species: pet ? pet.species : species,
+      breed: pet ? pet.breed : breed,
       service_id: serviceId,
       specialist_id: specialistId,
       date,
       time,
+      status: 'Pending'
     });
+
+    // Fetch the created appointment with associated data
+    const appointmentWithDetails = await Appointment.findByPk(newAppointment.id, {
+      include: [
+        {
+          model: Specialist,
+          as: 'specialist',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+      attributes: ['id', 'date', 'time', 'status', 'pet_name', 'species', 'breed', 'full_name', 'email', 'phone_number'],
+    });
+
+    res.status(201).json(appointmentWithDetails);
+
+
     // Send confirmation email
     mailer.sendMail({
       to: email,
@@ -206,50 +234,64 @@ router.post('/appointments', async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
+
 });
 
-router.get('/appointments', [authenticateToken], async (req, res) => {
+router.get('/appointments', optionalAuthMiddleware, async (req, res) => {
   try {
-    // Extract user ID from the authenticated user
-    const user_id = req.user ? req.user.id : null;
-    if (!user_id) {
-      return res.status(401).json({ message: "Unauthorized" });
+    let appointments;
+    const { email, phoneNumber } = req.query;
+
+    if (req.user) {
+      // User is authenticated
+      const userId = req.user.id;
+
+      // Fetch appointments for authenticated users (owners)
+      appointments = await Appointment.findAll({
+        where: { user_id: userId },
+        include: [
+          {
+            model: Specialist,
+            as: 'specialist',
+            attributes: ['id', 'name', 'email'],
+          },
+        ],
+        attributes: ['id', 'date', 'time', 'status', 'pet_name', 'species', 'breed', 'full_name', 'email', 'phone_number'],
+        order: [['date', 'ASC'], ['time', 'ASC']],
+      });
+    } else if (email && phoneNumber) {
+      // User is not authenticated, but provided email and phone number
+      appointments = await Appointment.findAll({
+        where: {
+          email: email,
+          phone_number: phoneNumber
+        },
+        include: [
+          {
+            model: Specialist,
+            as: 'specialist',
+            attributes: ['id', 'name', 'email'],
+          },
+        ],
+        attributes: ['id', 'date', 'time', 'status', 'pet_name', 'species', 'breed', 'full_name', 'email', 'phone_number'],
+        order: [['date', 'ASC'], ['time', 'ASC']],
+      });
+    } else {
+      return res.status(400).json({ message: "Email and phone number are required for unauthenticated users" });
     }
 
-    // Fetch appointments for the user
-    const appointments = await Appointment.findAll({
-      where: { user_id }, // Filter by user_id
-      include: [{
-        model: Specialist,
-        as: 'specialist',
-        attributes: ['id', 'name', 'email'], // Choose what you want to expose
-      }],
-      attributes: [
-        'id',
-        'full_name',
-        'email',
-        'phone_number',
-        'pet_id',
-        'pet_name',
-        'species',
-        'breed',
-        'service_id',
-        'specialist_id',
-        'date',
-        'time',
-        'status',
-        'createdAt',
-        'updatedAt',
-      ],
-    });
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found" });
+    }
 
-    res.status(200).json(appointments);
+    res.json(appointments);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching appointments:', err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
+// GET /api/specialist/appointments - for specialists only
 router.get('/specialist/appointments', [authenticateToken], async (req, res) => {
   try {
     // Assuming your authenticateToken middleware now attaches the specialist object to req.user
@@ -258,8 +300,7 @@ router.get('/specialist/appointments', [authenticateToken], async (req, res) => 
     const specialistId = req.user ? req.user.id : null;
     const userRole = req.user ? req.user.role : null;
 
-    if (!specialistId || userRole !== 'doctor' && userRole !== 'specialist') {
-
+    if (!specialistId || (userRole !== 'doctor' && userRole !== 'specialist')) {
       return res.status(403).json({ message: "Unauthorized: Not a specialist" });
     }
 
@@ -310,6 +351,8 @@ router.get('/specialist/appointments', [authenticateToken], async (req, res) => 
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+
 
 router.patch('/appointments/:appointmentId/status', [authenticateToken], async (req, res) => {
   const { appointmentId } = req.params;
