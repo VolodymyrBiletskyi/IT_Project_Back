@@ -16,6 +16,7 @@ const swaggerUi = require('swagger-ui-express');
 const receptionistRoutes = require('./routes/receptionistRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
+
 const app = express();
 
 // Middleware
@@ -30,6 +31,7 @@ app.use('/api', appointmentRoutes);
 app.use('/api', servicesRoutes);
 app.use('/api/receptionist', receptionistRoutes);
 app.use('/api/reviews', reviewRoutes);
+
 
 app.get("/users", async (req, res) => {
   try {
