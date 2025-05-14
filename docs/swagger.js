@@ -634,3 +634,430 @@
  *       200:
  *         description: Password reset successful
  */
+
+/**
+ * @swagger
+ * /api/reviews:
+ *   post:
+ *     summary: Submit a new review
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - service_id
+ *               - specialist_id
+ *               - rating
+ *             properties:
+ *               service_id:
+ *                 type: string
+ *                 format: uuid
+ *               specialist_id:
+ *                 type: string
+ *                 format: uuid
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Review submitted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 review:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                     rating:
+ *                       type: integer
+ *                     comment:
+ *                       type: string
+ *                     service_name:
+ *                       type: string
+ *                     doctor_name:
+ *                       type: string
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Service or Specialist not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/reviews/service/{id}:
+ *   get:
+ *     summary: Get reviews for a specific service
+ *     tags: [Reviews]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the service
+ *     responses:
+ *       200:
+ *         description: List of reviews for the service
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   rating:
+ *                     type: integer
+ *                   comment:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                   Service:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                   Specialist:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *       404:
+ *         description: Service not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/reviews/doctor/{id}:
+ *   get:
+ *     summary: Get reviews for a specific doctor
+ *     tags: [Reviews]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the doctor
+ *     responses:
+ *       200:
+ *         description: List of reviews for the doctor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   rating:
+ *                     type: integer
+ *                   comment:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                   Service:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                   Specialist:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *       404:
+ *         description: Doctor not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/receptionist/appointments:
+ *   get:
+ *     summary: Get all appointments (for receptionist)
+ *     tags: [Receptionist]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all appointments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                   time:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   full_name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   phone_number:
+ *                     type: string
+ *                   pet_name:
+ *                     type: string
+ *                   species:
+ *                     type: string
+ *                   breed:
+ *                     type: string
+ *       403:
+ *         description: Forbidden - Only receptionists can access this endpoint
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/receptionist/appointments/{id}:
+ *   put:
+ *     summary: Update an appointment (for receptionist)
+ *     tags: [Receptionist]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the appointment to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               service_id:
+ *                 type: string
+ *                 format: uuid
+ *               specialist_id:
+ *                 type: string
+ *                 format: uuid
+ *               date:
+ *                 type: string
+ *                 format: date
+ *               time:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Appointment updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 service_id:
+ *                   type: string
+ *                   format: uuid
+ *                 specialist_id:
+ *                   type: string
+ *                   format: uuid
+ *                 date:
+ *                   type: string
+ *                   format: date
+ *                 time:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *       403:
+ *         description: Forbidden - Only receptionists can access this endpoint
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/receptionist/pets/{id}/appointments:
+ *   post:
+ *     summary: Create a new appointment for a pet (for receptionist)
+ *     tags: [Receptionist]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the pet
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - service_id
+ *               - specialist_id
+ *               - date
+ *               - time
+ *             properties:
+ *               service_id:
+ *                 type: string
+ *                 format: uuid
+ *               specialist_id:
+ *                 type: string
+ *                 format: uuid
+ *               date:
+ *                 type: string
+ *                 format: date
+ *               time:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Appointment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 pet_id:
+ *                   type: string
+ *                   format: uuid
+ *                 service_id:
+ *                   type: string
+ *                   format: uuid
+ *                 specialist_id:
+ *                   type: string
+ *                   format: uuid
+ *                 date:
+ *                   type: string
+ *                   format: date
+ *                 time:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *       403:
+ *         description: Forbidden - Only receptionists can access this endpoint
+ *       404:
+ *         description: Pet not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/receptionist/specialists/{specialistId}/appointments:
+ *   get:
+ *     summary: Get appointments for a specific specialist (for receptionist)
+ *     tags: [Receptionist]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: specialistId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the specialist
+ *     responses:
+ *       200:
+ *         description: List of appointments for the specialist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                   time:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   pet_name:
+ *                     type: string
+ *                   species:
+ *                     type: string
+ *                   breed:
+ *                     type: string
+ *                   user:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         format: uuid
+ *                       name:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                   specialist:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         format: uuid
+ *                       name:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *       403:
+ *         description: Forbidden - Only receptionists can access this endpoint
+ *       404:
+ *         description: Specialist not found
+ *       500:
+ *         description: Server error
+ */
