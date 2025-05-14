@@ -3,6 +3,7 @@ const Specialist = require('./Specialist');
 const Pet = require('./Pet');
 const User = require('./User');
 const Service = require('./Service');
+const Review = require('./Review');
 
 Appointment.belongsTo(Specialist, {
   foreignKey: 'specialist_id',
@@ -42,6 +43,17 @@ User.hasMany(Pet, {
 });
 
 Pet.hasMany(Appointment, { foreignKey: 'pet_id' });
+
+
+Service.hasMany(Review, { foreignKey: 'service_id' });
+Review.belongsTo(Service, { foreignKey: 'service_id' });
+
+Specialist.hasMany(Review, { foreignKey: 'specialist_id' });
+Review.belongsTo(Specialist, { foreignKey: 'specialist_id' });
+
+User.hasMany(Review, { foreignKey: 'user_id' });
+Review.belongsTo(User, { foreignKey: 'user_id' });
+
 
 
 

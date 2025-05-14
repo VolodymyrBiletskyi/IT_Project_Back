@@ -14,6 +14,8 @@ const { Appointment, Specialist } = require('./models/associations');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const receptionistRoutes = require('./routes/receptionistRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+
 
 const app = express();
 
@@ -28,6 +30,8 @@ app.use("/api/pets", medicalRecordsRoutes);
 app.use('/api', appointmentRoutes);
 app.use('/api', servicesRoutes);
 app.use('/api/receptionist', receptionistRoutes);
+app.use('/api/reviews', reviewRoutes);
+
 
 app.get("/users", async (req, res) => {
   try {
