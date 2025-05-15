@@ -22,12 +22,22 @@ const User = sequelize.define("User", {
       },
     },
   },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      is: {
+        args: /^[0-9]{10,15}$/,
+        msg: "Please provide a valid phone number",
+      },
+    },
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   role: {
-    type: DataTypes.ENUM("doctor", "receptionist", "owner", "admin"),
+    type: DataTypes.ENUM("specialist", "receptionist", "owner", "admin"),
     allowNull: false,
   },
   resetToken: {
