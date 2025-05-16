@@ -1,12 +1,62 @@
-﻿import React from "react";
+﻿import React, { useState } from "react";
 import "./SignUp.css";
 import ReactDOM from "react-dom/client";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { Link } from "react-router-dom";
 
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const SignUp = () => {
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    petName: "",
+    species: "",
+    breed: "",
+    agreeToTerms: false,
+  });
+
+  // Handle input changes to update formData
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent form's default behavior (page refresh)
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData), // Send form data as JSON
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to register");
+      }
+
+      // Handle success
+      const data = await response.json();
+      console.log("Registration successful:", data);
+      alert("Registration successful!");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Registration failed. Please try again.");
+    }
+  };
+
+
   return (
     <div>
       <Header/>
