@@ -332,7 +332,7 @@ h2{
 
 .reviews-container {
     background-color: #FCFBFB;
-    width: 1920px;
+    width: auto;
     height: 708px;
     display: flex;
     justify-content: center;
