@@ -21,6 +21,10 @@
     text-align: center;
 }
 
+.logo-container span {
+    margin-top: 10px;
+}
+
 .logo {
     height: 84px;
     width: 85px;
