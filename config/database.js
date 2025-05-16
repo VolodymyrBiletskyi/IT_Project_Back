@@ -9,7 +9,7 @@ const sequelize = connectionString
     logging: false,
     dialectOptions: {
       ssl: {
-        require: true,
+        require: false,
         rejectUnauthorized: false,
       },
     },
