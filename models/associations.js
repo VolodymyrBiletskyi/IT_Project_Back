@@ -44,6 +44,7 @@ User.hasMany(Pet, {
 
 Pet.hasMany(Appointment, { foreignKey: 'pet_id' });
 
+
 Service.hasMany(Review, { foreignKey: 'service_id' });
 Review.belongsTo(Service, { foreignKey: 'service_id' });
 
