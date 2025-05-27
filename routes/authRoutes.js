@@ -11,9 +11,10 @@ const authenticateToken = require("../middleware/authMiddleware");
 const { deleteUser } = require("../controllers/userController");
 const req = require("express/lib/request");
 const mailer = require("../controllers/mailer");
-const { requestPasswordReset, resetPassword } = require("../controllers/authController");
+const { requestPasswordReset, resetPassword, requestAccountDeletion, confirmAccountDeletion } = require("../controllers/authController");
 require("dotenv").config();
 const router = express.Router();
+const Specialist = require("../models/Specialist");
 
 // Protected route example
 router.get("/protected", authenticateToken, (req, res) => {
@@ -22,48 +23,60 @@ router.get("/protected", authenticateToken, (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("login request received:", {email, password});
-  
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
 
   try {
-    // Find user by email
-    const user = await User.findOne({ where: { email } });
+    let userOrSpecialist = await User.findOne({ where: { email } });
+    let userType = "user";
 
-    if (!user) {
-      console.log("User not found for email:", email);
+    if (!userOrSpecialist) {
+      userOrSpecialist = await Specialist.findOne({ where: { email } });
+      userType = "specialist";
+    }
+
+    if (!userOrSpecialist) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    console.log("Stored hashed password in DB:", user.password);
-    console.log("Entered password:", password);
-
-    // Compare password
-    const isMatch = await user.comparePassword(password);
+    let isMatch = false;
+    if (userType === "specialist") {
+      isMatch = await bcrypt.compare(password, userOrSpecialist.password);
+    } else {
+      isMatch = await userOrSpecialist.comparePassword(password);
+    }
 
     if (!isMatch) {
-      console.log("Password does not match for user:", user.email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    console.log("Password matches for user:", user.email);
+    // Generate JWT token based on user type
+    const tokenPayload = {
+      id: userOrSpecialist.id,
+      email: userOrSpecialist.email,
+      role: userOrSpecialist.role, // Now this will be 'specialist' for specialists
+    };
 
-    // Generate JWT token
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    console.log("JWT token generated for user:", user.email);
-    res.json({ token });
+    // Force the role to 'specialist' if the userType is specialist
+    if (userType === 'specialist') {
+
+      tokenPayload.role = 'doctor';
+
+    }
+
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    res.json({ token, userType });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-router.post("/register", async (req, res) => {
-  const { name, email, password, role, petName, species, breed } = req.body;
 
-  if (!name || !email || !password || !role) {
+router.post("/register", async (req, res) => {
+  const { name, email, phone, password, role, petName, species, breed } = req.body;
+
+  if (!name || !email || !password || !role || !phone) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -82,6 +95,7 @@ router.post("/register", async (req, res) => {
       id: uuidv4(),
       name,
       email,
+      phone,
       password,
       role,
     });
@@ -118,7 +132,7 @@ router.post("/register", async (req, res) => {
 
 
 router.put("/edit", authenticateToken, async (req, res) => {
-  const { name, email, password, role, petName, species, breed, age } = req.body;
+  const { name, email, phone, password, role, petName, species, breed, age, gender, weight } = req.body;
   const userId = req.user.id; // Get user ID from token
 
   console.log("Update profile request for user:", userId);
@@ -132,6 +146,7 @@ router.put("/edit", authenticateToken, async (req, res) => {
     // Update user fields if provided
     if (name) user.name = name;
     if (email) user.email = email;
+    if (phone) user.phone = phone;
     if (role) {
       const validRoles = ["admin", "doctor", "receptionist", "owner"];
       if (!validRoles.includes(role)) {
@@ -161,6 +176,8 @@ router.put("/edit", authenticateToken, async (req, res) => {
         if (species) pet.species = species;
         if (breed) pet.breed = breed;
         if (age) pet.age = age;
+        if (gender) pet.gender = gender;
+        if (weight) pet.weight = weight;
 
         // Save updated pet
         await pet.save();
@@ -179,5 +196,7 @@ router.put("/edit", authenticateToken, async (req, res) => {
 
 router.post("/reset-password-request",requestPasswordReset);
 router.post("/reset-password",resetPassword);
+router.post("/request-account-deletion", requestAccountDeletion);
+router.delete("/confirm-account-deletion", confirmAccountDeletion);
 
 module.exports = router;

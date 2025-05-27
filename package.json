@@ -24,11 +24,10 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "pg": "^8.14.1",
     "prisma": "^6.5.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.5.0",
     "sequelize": "^6.37.6",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

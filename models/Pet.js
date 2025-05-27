@@ -25,11 +25,19 @@ const Pet = sequelize.define("Pet", {
   },
   owner_id: {
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: "users",  // Reference the users table
       key: "id",       // Reference the id column
     },
+  },
+  gender: {
+    type: DataTypes.ENUM("male", "female"),
+    allowNull: true,
+  },
+  weight: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
   },
 }, {
   tableName: "pets",  // Explicitly set the table name to lowercase

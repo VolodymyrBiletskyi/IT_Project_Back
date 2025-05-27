@@ -2,8 +2,9 @@
     background-color: #F9F8F8;
     font-size: 16px;
     height: 385px;
-    width: 1920px;
+    width: auto;
     margin-bottom: 44px;
+    box-sizing: border-box;
 }
 
 .footer-container {
@@ -96,6 +97,12 @@
     color: #1C1B1F;
 }
 
+.information-section ul a:hover {
+    background-color: #D8F0FF;
+    padding: 4px 4px;
+    border-radius: 10px;
+}
+
 .information-section ul {
     font-family: Inter, serif;
     font-weight: 500;
@@ -121,6 +128,12 @@
 .links-section a {
     color: #1C1B1F;
     text-decoration: none;
+}
+
+.links-section a:hover {
+    background-color: #D8F0FF;
+    padding: 4px 4px;
+    border-radius: 10px;
 }
 
 .links-section ul {

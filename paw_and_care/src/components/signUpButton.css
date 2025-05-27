@@ -5,7 +5,19 @@
     line-height: 20px;
     font-weight: 600;
     background: white;
+    color: #000000;
     border-radius: 10px;
     cursor: pointer;
 }
 
+.signUp-btn:hover {
+    background: #D8F0FF;
+    border: #D8F0FF;
+    color: #000000;
+}
+
+.signUp-btn:active {
+    background: #6390B8;
+    border: #6390B8;
+    color: white;
+}

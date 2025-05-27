@@ -21,6 +21,10 @@
     text-align: center;
 }
 
+.logo-container span {
+    margin-top: 10px;
+}
+
 .logo {
     height: 84px;
     width: 85px;
@@ -42,14 +46,19 @@
 
 .nav-links a {
     font-style: normal;
-    width: auto;
-    height: 20px;
     font-weight: 600;
     font-size: 16px;
     line-height: 20px;
     color: black;
     text-decoration: none;
-    margin-left: 85px;
+    margin-left: 77px;
+    padding: 4px 6px
+}
+
+.nav-links a:hover {
+    background-color: #D8F0FF;
+    border-radius: 10px;
+    padding: 4px 6px
 }
 
 .nav-buttons {

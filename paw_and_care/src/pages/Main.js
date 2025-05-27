@@ -13,6 +13,8 @@ import pet_house from "../assets/SVG/pet-house.svg";
 import smart_tracking from "../assets/SVG/smart-tracking.svg";
 import all_in_one from "../assets/SVG/all-in-one.svg"
 import {Link} from "react-router-dom";
+import MoreButton from "../components/moreButton";
+
 
 const Main = () => {
   return (
@@ -60,6 +62,7 @@ const Main = () => {
               <br/>treatments. We use the latest technology and methods to ensure
               <br/>your pet’s health and well-being. Trust us to keep your furry
               <br/>friends happy and healthy every step of the way.</p>
+            <MoreButton/>
           </div>
           <div className="about-us-img">
             <img src={cat} alt="About Us"/>

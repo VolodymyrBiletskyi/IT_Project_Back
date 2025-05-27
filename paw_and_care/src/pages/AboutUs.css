@@ -1,6 +1,6 @@
 ﻿.about-container {
     margin-top: 160px;
-    width: 1920px;
+    width: auto;
     height: 621px;
     background-image: url("../assets/Лендинги/155657.jpg");
     /*display: flow;*/
@@ -39,7 +39,7 @@
 }
 
 .quote-container {
-    width: 1920px;
+    width: auto;
     height: 290px;
     background-color: rgba(237, 128, 79, 0.92);
     margin-top: 100px;

@@ -1,0 +1,132 @@
+﻿.login-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    background: #fff;
+    margin-top: 100px;
+    margin-bottom: 150px;
+}
+
+.login-main {
+    max-width: 721px;
+    width: 100%;
+}
+
+.login-title {
+    font-size: 37px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.login-form input {
+    width: auto;
+    height: 52px;
+    border-radius: 10px !important;
+    font-size: 16px;
+    text-align: start;
+    font-weight: 400;
+    font-family: 'Inter', 'sans-serif';
+    border: 1px solid #252424 !important;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    padding: 0.5rem;
+    border: 1px solid #252424;
+    border-radius: 10px;
+}
+
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-checkbox input {
+    margin-top: 0.2rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.submit-btn {
+    background-color: #F05508;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Open Sans', 'sans-serif';
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 360px;
+    height: 61px;
+}
+
+.submit-btn:hover {
+    background-color: #F68E5F;
+    color: #fff;
+}
+
+.submit-btn:active {
+    background-color: #F05508;
+}
+
+.signup-btn {
+    border: 1px solid #F05508;
+    color: #F05508;
+    background: none;
+    padding: 0.5rem 1rem;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Open Sans', 'sans-serif';
+    border-radius: 10px;
+    cursor: pointer;
+    width: 360px;
+    height: 61px;
+}
+
+.signup-btn:hover {
+    background-color: #F68E5F;
+    color: #fff;
+}
+
+.signup-btn:active {
+    background-color: #F05508;
+}
+
+.required-note {
+    font-size: 0.75rem;
+    color: #555;
+}
+
