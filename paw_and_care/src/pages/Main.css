@@ -68,105 +68,11 @@ h2{
     font-family: Poppins, serif;
     margin-top: 200px;
     text-align: center;
-}
-
-.services-grid {
-    display: grid;
-    align-items: center;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    margin: 60px 247px;
-}
-
-.general-checkup-service {
-    background-image:
-            linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
-            url("../assets/Services/2149100168.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 464px;
-    height: 264px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: baseline;
-    position: relative;
-}
-
-.general-checkup-service p {
-    font-size: 20px;
-    line-height: 20px;
-    color: white;
-    font-weight: 500;
-    font-family: Inter, serif;
-    z-index: 1;
-    text-align: left;
-    position: absolute;
-    bottom: 0;
-    left: 25px;
-}
-
-.vaccinations-service {
-    background-image:
-            linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
-            url("../assets/Services/2147928582.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 464px;
-    height: 264px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: baseline;
-    position: relative;
-}
-
-.vaccinations-service p {
-    font-size: 20px;
-    line-height: 20px;
-    color: white;
-    font-weight: 500;
-    font-family: Inter, serif;
-    z-index: 1;
-    text-align: left;
-    position: absolute;
-    bottom: 0;
-    left: 25px;
-}
-
-.dental-care-service {
-    background-image:
-            linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
-            url('../assets/Services/Dental.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 464px;
-    height: 264px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: baseline;
-    position: relative;
-}
-
-.dental-care-service p {
-    font-size: 20px;
-    line-height: 20px;
-    color: white;
-    font-weight: 500;
-    font-family: Inter, serif;
-    z-index: 1;
-    text-align: left;
-    position: absolute;
-    bottom: 0;
-    left: 25px;
+    margin-left: 400px;
 }
 
 .services-button {
-    margin-left: 1400px;
+    margin-left: 1450px;
 }
 
 .about-us-container {

@@ -1,6 +1,7 @@
 ﻿import Header from '../components/header';
 import AppointmentButton from "../components/appointmentButton";
 import './Main.css';
+import './Services.css';
 import '../assets/Лендинги/2202.q702.029.F.m005.c7.veterinary.jpg';
 import '../assets/Services/2149100168.jpg';
 import '../assets/Services/2147928582.jpg';
@@ -11,6 +12,7 @@ import cat from "../assets/Services/cat.png";
 import pet_house from "../assets/SVG/pet-house.svg";
 import smart_tracking from "../assets/SVG/smart-tracking.svg";
 import all_in_one from "../assets/SVG/all-in-one.svg"
+import {Link} from "react-router-dom";
 
 const Main = () => {
   return (
@@ -30,16 +32,19 @@ const Main = () => {
       <div className="services-container">
         <h2>What we offer</h2>
         <div className="services-grid">
-          <div className="general-checkup-service">
+          <div className="services-card bg-general-checkup">
             <p>General Check-ups</p>
+            <Link to="/general-checkups" className="arrow-link" />
           </div>
-          <div className="vaccinations-service">
-            <a><p>Vaccinations</p></a>
+          <div className="services-card bg-vaccinations">
+            <p>Vaccinations</p>
+            <Link to="/vaccinations" className="arrow-link" />
           </div>
-          <div className="dental-care-service">
+          <div className="services-card bg-dental-care">
             <p>Dental Care</p>
+            <Link to="/dental-care" className="arrow-link" />
           </div>
-        </div>a
+        </div>
         <div className="services-button">
         <AllServicesButton/>
         </div>
