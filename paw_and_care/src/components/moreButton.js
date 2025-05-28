@@ -4,7 +4,9 @@ import './moreButton.css';
 
 const MoreButton = () => {
   return (
-      <Link to="/about-us"><button className="blue-btn">More</button></Link>
+  <div className="more-btn">
+    <Link to="about-us"><button className="blue-btn">More</button></Link>
+  </div>
   )
 }
 
