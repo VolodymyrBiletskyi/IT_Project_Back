@@ -2,9 +2,9 @@
     border-radius: 10px;
     width: 198px;
     height: 40px;
-    background-color: #FFFFFF !important;
-    border: #D8F0FF;
-    color: #9FD9FF;
+    background-color: #F05508 !important;
+    border: #F05508;
+    color: #FFF;
     font-weight: 600;
     font-size: 16px;
     line-height: 20px;
@@ -13,14 +13,14 @@
 
 
 .blue-btn:hover {
-    color: #086788;
-    background-color: #D8F0FF !important;
-    border: #D8F0FF;
+    color: #FFFFFF;
+    background-color: #F68E5F !important;
+    border: #F68E5F;
     transition: background-color 0.3s ease;
 }
 
 .blue-btn:active {
-    background-color: #07A0C3 !important;
+    background-color: #F05508 !important;
     color: white;
     transition: background-color 0.3s ease;
 }

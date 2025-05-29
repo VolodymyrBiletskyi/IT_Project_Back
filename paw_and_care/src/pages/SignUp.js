@@ -1,60 +1,63 @@
 ﻿import React, { useState } from "react";
 import "./SignUp.css";
-import ReactDOM from "react-dom/client";
+// import ReactDOM from "react-dom/client";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
 const SignUp = () => {
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phoneNumber: "",
-    petName: "",
-    species: "",
-    breed: "",
-    agreeToTerms: false,
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const role ='owner';
+  const [petName, setPetName] = useState('');
+  const [species, setSpecies] = useState('');
+  const [breed, setBreed] = useState('');
+  const navigate = useNavigate();
 
-  // Handle input changes to update formData
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent form's default behavior (page refresh)
+  async function SignUp () {
 
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
+      const data = {
+        name,
+        email,
+        phone,
+        password,
+        role,
+        petName,
+        species,
+        breed
+      };
+
+      let result = await fetch('https://vetclinic-backend.ew.r.appspot.com/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData), // Send form data as JSON
+          "Accept": "application/json",
+        }
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to register");
-      }
+      result = await result.json();
+      console.warn("data", data);
+      console.warn("result", result);
 
-      // Handle success
-      const data = await response.json();
-      console.log("Registration successful:", data);
-      alert("Registration successful!");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Registration failed. Please try again.");
-    }
+      localStorage.setItem('user-info', JSON.stringify(result));
+      navigate('/about-us');
+
+
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    SignUp();
   };
+
+
 
 
   return (
@@ -63,34 +66,59 @@ const SignUp = () => {
     <div className="signup-container">
       <main className="signup-main">
         <h1 className="signup-title">Sign Up</h1>
-        <form className="signup-form">
+        <form className="signup-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Full Name*</label>
-            <input type="text" required />
+            <input type="text"
+                   value={name}
+                   onChange={(e) => setName(e.target.value)}
+                   required />
           </div>
           <div className="form-row">
             <div className="form-group">
               <label>Email*</label>
-              <input type="email" required />
+              <input type="email"
+                     value={email}
+                     onChange={(e) => setEmail(e.target.value)}
+                     required />
             </div>
             <div className="form-group">
               <label>Phone Number</label>
-              <input type="tel" />
+              <input type="tel"
+                     value={phone}
+                     onChange={(e) => setPhone(e.target.value)}
+                     required/>
             </div>
           </div>
           <div className="form-group">
             <label>Pet's Name</label>
-            <input type="text" />
+            <input type="text"
+                   value={petName}
+                   onChange={(e) => setPetName(e.target.value)}
+                   required/>
           </div>
           <div className="form-row">
             <div className="form-group">
               <label>Species*</label>
-              <input type="text" required />
+              <input type="text"
+                     value={species}
+                     onChange={(e) => setSpecies(e.target.value)}
+                     required />
             </div>
             <div className="form-group">
               <label>Breed*</label>
-              <input type="text" required />
+              <input type="text"
+                     value={breed}
+                     onChange={(e) => setBreed(e.target.value)}
+                     required />
             </div>
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="current-password"
+                   value={password}
+                   onChange={(e) => setPassword(e.target.value)}
+                   required/>
           </div>
           <div className="form-checkbox">
             <input type="checkbox" required />
