@@ -1,0 +1,37 @@
+﻿.deletion-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 140px;
+}
+
+.deletion h1 {
+    text-align: center;
+    font-size: 126px;
+}
+
+.deletion p {
+    font-size: 24px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+}
+
+.deletion-container button {
+    border: none;
+    background-color: #DC3545;
+    color: white;
+    width: 20%;
+    height: 61px;
+    margin-bottom: 123px;
+    border-radius: 10px;
+}
+
+.deletion-container button:hover {
+    background-color: #D52424;
+    color: white;
+}
+
+.deletion-container button:active {
+    background-color: #DC3545;
+}

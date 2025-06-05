@@ -110,6 +110,7 @@
     border-radius: 8px;
     text-align: center;
     overflow: hidden;
+    font-weight: 400;
 }
 
 .service-card > * {
@@ -136,7 +137,7 @@
     font-weight: 600;
     font-family: Inter, serif;
     padding-top: 87px;
-    padding-left: 131px;
+    text-align: center;
 }
 
 .service-card p {
@@ -146,7 +147,7 @@
     font-weight: 400;
     font-family: Inter, serif;
     margin-top: 19px;
-    padding-left: 131px;
+    text-align: center;
 }
 
 .service-include-container {
@@ -239,6 +240,11 @@
     white-space: normal;
 }
 
+.h2 {
+    text-align: center !important;
+}
+
+
 .paw-list .forwho-title {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
@@ -275,7 +281,6 @@
     font-family: Poppins, serif;
     margin-top: 100px;
     text-align: center;
-    margin-left: 400px;
 }
 .service-book-please button {
     width: 270px;

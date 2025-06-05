@@ -130,3 +130,14 @@
     color: #555;
 }
 
+.forgot-password {
+    text-align: start;
+    width: 140px;
+    height: auto;
+}
+
+.forgot-password p {
+    font-family: 'Inter', 'sans-serif';
+    text-decoration: none;
+    color: #000000;
+}

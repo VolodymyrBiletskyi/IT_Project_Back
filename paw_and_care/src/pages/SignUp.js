@@ -1,13 +1,17 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useEffect } from "react";
 import "./SignUp.css";
 // import ReactDOM from "react-dom/client";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
 
-
-
 const SignUp = () => {
+
+  useEffect(() => {
+    if (localStorage.getItem('user-info')) {
+      navigate('/about-us')
+    }
+  }, []);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,20 +24,20 @@ const SignUp = () => {
   const navigate = useNavigate();
 
 
-  async function SignUp () {
+  const handleSignUp = async () => {
+    const data = {
+      name,
+      email,
+      phone,
+      password,
+      role,
+      petName,
+      species,
+      breed,
+    };
 
-      const data = {
-        name,
-        email,
-        phone,
-        password,
-        role,
-        petName,
-        species,
-        breed
-      };
-
-      let result = await fetch('https://vetclinic-backend.ew.r.appspot.com/api/auth/register', {
+    try {
+      const response = await fetch('https://vetclinic-backend.ew.r.appspot.com/api/auth/register', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -42,19 +46,24 @@ const SignUp = () => {
         }
       });
 
-      result = await result.json();
-      console.warn("data", data);
-      console.warn("result", result);
+      const result = await response.json();
 
-      localStorage.setItem('user-info', JSON.stringify(result));
-      navigate('/about-us');
+      if (response.ok) {
+        localStorage.setItem('user-info', JSON.stringify(result));
+        navigate("/about-us");
+      } else {
+        alert("Registration failed: " + result.message);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 
-
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    SignUp();
+    handleSignUp();
   };
 
 
@@ -115,7 +124,7 @@ const SignUp = () => {
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input type="current-password"
+            <input type="password"
                    value={password}
                    onChange={(e) => setPassword(e.target.value)}
                    required/>
