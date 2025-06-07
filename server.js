@@ -35,6 +35,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/api/pets", petRoutes);
 
+
 app.get("/users", async (req, res) => {
   try {
     const users = await User.findAll();  // Use the User model
@@ -73,7 +74,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:' + process.env.PORT,
+        url: process.env.SWAGGER_URL || 'http://localhost:' + process.env.PORT,
       },
     ],
     components: {

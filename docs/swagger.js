@@ -1060,6 +1060,7 @@
  *         description: Specialist not found
  *       500:
  *         description: Server error
+
  */
 /**
  * @swagger
