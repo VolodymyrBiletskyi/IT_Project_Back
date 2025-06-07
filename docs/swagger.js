@@ -1060,4 +1060,67 @@
  *         description: Specialist not found
  *       500:
  *         description: Server error
+
+ */
+/**
+ * @swagger
+ * /api/pets/{petId}/photo:
+ *   post:
+ *     summary: Upload a photo for a specific pet
+ *     tags: [Pets]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: petId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the pet to upload photo for
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               petPhoto:
+ *                 type: string
+ *                 format: binary
+ *                 description: The photo file to upload for the pet.
+ *     responses:
+ *       200:
+ *         description: Pet photo uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 pet:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                     name:
+ *                       type: string
+ *                     species:
+ *                       type: string
+ *                     photo_url:
+ *                       type: string
+ *                 photoUrl:
+ *                   type: string
+ *       400:
+ *         description: No photo file uploaded or file is not an image.
+ *       401:
+ *         description: Unauthorized - Token is missing or invalid.
+ *       403:
+ *         description: Forbidden - User not authorized to update this pet.
+ *       404:
+ *         description: Pet not found.
+ *       500:
+ *         description: Server error during photo upload.
  */
