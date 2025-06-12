@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './header.css';
-import logo from '../assets/SVG/logo.svg';
-import AppointmentButton from "./appointmentButton";
-import SignUpButton from "./signUpButton";
-import profile_picture_test from "../assets/Img Docktor/Office girl.jpg";
-import arrow from "../assets/SVG/arrow-up-340-svgrepo-com 2.svg";
+import logo from '../../assets/SVG/logo.svg';
+import AppointmentButton from "../buttons/appointmentButton";
+import SignUpButton from "../buttons/signUpButton";
+import profile_picture_test from "../../assets/Img Docktor/Office girl.jpg";
+import arrow from "../../assets/SVG/arrow-up-340-svgrepo-com 2.svg";
 
 const Header = () => {
   const [open, setOpen] = React.useState(false);

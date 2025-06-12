@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from "react";
 import "./SignUp.css";
 // import ReactDOM from "react-dom/client";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {

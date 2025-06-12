@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './footer.css';
-import logo from '../assets/SVG/logo.svg';
-import phone from '../assets/SVG/call.svg';
-import mail from '../assets/SVG/mail.svg';
-import location from '../assets/SVG/location_on.svg';
-import clock from '../assets/SVG/clock.svg';
-import facebook from "../assets/SVG/Facebook.svg";
-import whatsapp from "../assets/SVG/whatsapp.svg";
-import instagram from "../assets/SVG/instagram.svg";
+import logo from '../../assets/SVG/logo.svg';
+import phone from '../../assets/SVG/call.svg';
+import mail from '../../assets/SVG/mail.svg';
+import location from '../../assets/SVG/location_on.svg';
+import clock from '../../assets/SVG/clock.svg';
+import facebook from "../../assets/SVG/Facebook.svg";
+import whatsapp from "../../assets/SVG/whatsapp.svg";
+import instagram from "../../assets/SVG/instagram.svg";
 
 const Footer = () =>{
   return (

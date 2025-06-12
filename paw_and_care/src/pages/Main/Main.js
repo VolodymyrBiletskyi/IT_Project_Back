@@ -1,19 +1,19 @@
-﻿import Header from '../components/header';
-import AppointmentButton from "../components/appointmentButton";
+﻿import Header from '../../components/header/header';
+import AppointmentButton from "../../components/buttons/appointmentButton";
 import './Main.css';
 import './Services.css';
-import '../assets/Лендинги/2202.q702.029.F.m005.c7.veterinary.jpg';
-import '../assets/Services/2149100168.jpg';
-import '../assets/Services/2147928582.jpg';
-import '../assets/Services/Dental.jpg';
-import Footer from '../components/footer';
-import AllServicesButton from "../components/allServicesButton";
-import cat from "../assets/Services/cat.png";
-import pet_house from "../assets/SVG/pet-house.svg";
-import smart_tracking from "../assets/SVG/smart-tracking.svg";
-import all_in_one from "../assets/SVG/all-in-one.svg"
+import '../../assets/Лендинги/2202.q702.029.F.m005.c7.veterinary.jpg';
+import '../../assets/Services/2149100168.jpg';
+import '../../assets/Services/2147928582.jpg';
+import '../../assets/Services/Dental.jpg';
+import Footer from '../../components/footer/footer';
+import AllServicesButton from "../../components/buttons/allServicesButton";
+import cat from "../../assets/Services/cat.png";
+import pet_house from "../../assets/SVG/pet-house.svg";
+import smart_tracking from "../../assets/SVG/smart-tracking.svg";
+import all_in_one from "../../assets/SVG/all-in-one.svg"
 import {Link} from "react-router-dom";
-import MoreButton from "../components/moreButton";
+import MoreButton from "../../components/buttons/moreButton";
 
 
 const Main = () => {

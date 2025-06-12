@@ -1,6 +1,6 @@
 import React, { Profiler } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Main from './pages/Main';
+import Main from './pages/Main/Main';
 import Services from './pages/Services';
 import AboutUs from "./pages/AboutUs";
 import GeneralCheckUps from "./pages/GeneralCheckUps";
@@ -9,14 +9,14 @@ import DentalCare from "./pages/DentalCare";
 import Grooming from "./pages/Grooming";
 import LaboratoryTests from "./pages/LaboratoryTests";
 import NutritionalCounselling from "./pages/NutritionalCounselling";
-import LogIn from "./pages/LogIn";
-import SignUp from "./pages/SignUp";
-import PasswordReset from "./pages/PasswordReset";
-import PasswordRecoveryRequest from "./pages/PasswordRecoveryRequest";
-import Profile from "./pages/Profile";
-import PasswordRecoverySuccess from "./pages/PasswordRecoverySuccess";
-import AccountDeletion from "./pages/AccountDeletion";
-import PageDeletionSuccess from "./pages/PageDeletionSuccess";
+import LogIn from "./pages/Login/LogIn";
+import SignUp from "./pages/SignUp/SignUp";
+import PasswordReset from "./pages/PasswordRecovery/PasswordReset";
+import PasswordRecoveryRequest from "./pages/PasswordRecovery/PasswordRecoveryRequest";
+import Profile from "./pages/Profile/Profile";
+import PasswordRecoverySuccess from "./pages/PasswordRecovery/PasswordRecoverySuccess";
+import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
+import PageDeletionSuccess from "./pages/AccountDeletion/PageDeletionSuccess";
 
 function App() {
   return (

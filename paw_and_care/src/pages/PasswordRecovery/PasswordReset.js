@@ -1,7 +1,7 @@
 ﻿import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import "./PasswordRecovery.css";
 
 const PasswordReset = () => {

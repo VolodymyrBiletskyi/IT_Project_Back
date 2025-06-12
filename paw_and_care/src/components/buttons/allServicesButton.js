@@ -1,6 +1,6 @@
 ﻿import { Link } from "react-router-dom";
 import React from "react";
-import arrow from "../assets/SVG/arrow-right.svg";
+import arrow from "../../assets/SVG/arrow-right.svg";
 import './allServicesButton.css';
 
 const ViewAllServices = () => {
