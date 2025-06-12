@@ -84,6 +84,11 @@
     object-fit: cover;
     border-radius: 50%;
     margin: 25px;
+    transform:  scale(0.9);
+}
+
+.profile-image:hover {
+    transform: scale(0.8);
 }
 
 .arrow-icon img {
