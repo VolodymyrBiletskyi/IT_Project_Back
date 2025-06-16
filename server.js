@@ -15,7 +15,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const receptionistRoutes = require('./routes/receptionistRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
-
+const path = require('path');
+const petRoutes = require('./routes/petRoutes');
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.use('/api', appointmentRoutes);
 app.use('/api', servicesRoutes);
 app.use('/api/receptionist', receptionistRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use("/api/pets", petRoutes);
 
 
 app.get("/users", async (req, res) => {
@@ -60,7 +63,7 @@ const startServer = async () => {
 };
 
 
-// to see the swagger use http://localhost:YOUR_PORT/api-docs
+// to see the swagger use https://vet-clinic-backend.ew.r.appspot.com/api-docs
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
@@ -71,7 +74,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:' + process.env.PORT,
+        url: process.env.SWAGGER_URL || 'http://localhost:' + process.env.PORT,
       },
     ],
     components: {

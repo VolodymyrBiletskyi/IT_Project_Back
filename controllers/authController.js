@@ -28,7 +28,7 @@ const requestPasswordReset = async (req, res) => {
       from: process.env.EMAIL,
       to: user.email,
       subject: "Password Reset Request",
-      text: `Click this link to reset your password: http://localhost:/auth/reset-password?token=${resetToken}`,
+      text: `Click this link to reset your password: https://vet-clinic-backend.ew.r.appspot.com/auth/reset-password?token=${resetToken}`,
     };
 
     await transporter.sendMail(mailOptions);
