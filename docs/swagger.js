@@ -463,7 +463,7 @@
  *         name: serviceId
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: List of available time slots
@@ -484,7 +484,7 @@
  * /api/pets/{petId}:
  *   patch:
  *     summary: Update pet information
- *     tags: [Admin]
+ *     tags: [Receptionist]
  *     security:
  *       - bearerAuth: []
  *     parameters:
