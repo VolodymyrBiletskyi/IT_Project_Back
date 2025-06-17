@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
 
 
     if (userType === 'specialist') {
-      tokenPayload.role = 'specialist';
+      tokenPayload.role = 'doctor';
     }
 
 
