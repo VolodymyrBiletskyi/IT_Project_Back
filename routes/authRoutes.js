@@ -59,9 +59,11 @@ router.post("/login", async (req, res) => {
     };
 
 
+
     if (userType === 'specialist') {
       tokenPayload.role = 'specialist';
     }
+
 
     // Also force role to 'admin' if user is a receptionist
     if (userType === 'user' && userOrSpecialist.role === 'receptionist') {
