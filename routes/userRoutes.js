@@ -24,14 +24,7 @@ async function authorizePetOwner(req, res, next) {
   }
 }
 
-router.get("/profile", authMiddleware, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId).select("-password");
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+
 router.get('/pets', authenticateToken, async (req                                                                                                           , res) => {
   try {
     const userId = req.user.id;

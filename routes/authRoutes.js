@@ -200,4 +200,22 @@ router.post("/reset-password",resetPassword);
 
 router.delete("/delete-account", authenticateToken, deleteAccount);
 
+router.get("/profile", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id; // ID extracted from JWT by the middleware
+
+    const user = await User.findByPk(userId, {
+      attributes: ['id', 'name', 'email', 'phone'] // only safe/public fields
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;

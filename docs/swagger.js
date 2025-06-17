@@ -1191,4 +1191,58 @@
  *                 error:
  *                   type: string
  */
+/**
+ * @swagger
+ * /api/auth/profile:
+ *   get:
+ *     summary: Get the currently authenticated user's profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   example: "123"
+ *                 userName:
+ *                   type: string
+ *                   example: "John"
+ *                 userSurname:
+ *                   type: string
+ *                   example: "Doe"
+ *                 email:
+ *                   type: string
+ *                   example: "john.doe@example.com"
+ *                 phoneNumber:
+ *                   type: string
+ *                   example: "+48123456789"
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Server error
+ */
 
