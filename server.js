@@ -63,7 +63,7 @@ const startServer = async () => {
 };
 
 
-// to see the swagger use http://localhost:YOUR_PORT/api-docs
+// to see the swagger use https://vet-clinic-backend.ew.r.appspot.com/api-docs
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',

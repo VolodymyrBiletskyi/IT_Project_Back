@@ -11,7 +11,7 @@ const authenticateToken = require("../middleware/authMiddleware");
 const { deleteUser } = require("../controllers/userController");
 const req = require("express/lib/request");
 const mailer = require("../controllers/mailer");
-const { requestPasswordReset, resetPassword, requestAccountDeletion, confirmAccountDeletion } = require("../controllers/authController");
+const { requestPasswordReset, resetPassword, deleteAccount } = require("../controllers/authController");
 require("dotenv").config();
 const router = express.Router();
 const Specialist = require("../models/Specialist");
@@ -195,8 +195,9 @@ router.put("/edit", authenticateToken, async (req, res) => {
 });
 
 router.post("/reset-password-request",requestPasswordReset);
+
 router.post("/reset-password",resetPassword);
-router.post("/request-account-deletion", requestAccountDeletion);
-router.delete("/confirm-account-deletion", confirmAccountDeletion);
+
+router.delete("/delete-account", authenticateToken, deleteAccount);
 
 module.exports = router;

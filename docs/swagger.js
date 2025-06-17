@@ -463,7 +463,7 @@
  *         name: serviceId
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: List of available time slots
@@ -484,7 +484,7 @@
  * /api/pets/{petId}:
  *   patch:
  *     summary: Update pet information
- *     tags: [Admin]
+ *     tags: [Receptionist]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -592,48 +592,96 @@
  *       500:
  *         description: Server error
  */
+
 /**
  * @swagger
- * /api/auth/request-account-deletion:
- *   post:
- *     summary: Request account deletion
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *             properties:
- *               email:
- *                 type: string
- *     responses:
- *       200:
- *         description: Request link sent
- */
-/**
- * @swagger
- * /api/auth/confirm-account-deletion:
+ * /api/auth/delete-account:
  *   delete:
- *     summary: Delete account and associated pets using token
+ *     summary: Delete the authenticated user's account and their pets
  *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - token
- *             properties:
- *               token:
- *                 type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Password reset successful
+ *         description: Account and associated pets deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Account and associated pets deleted successfully
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Server error
  */
+
+/**
+ * @swagger
+ * /api/pets/{petId}/photo:
+ *   get:
+ *     summary: Get the photo of a specific pet
+ *     tags: [Pets]
+ *     parameters:
+ *       - in: path
+ *         name: petId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the pet
+ *     responses:
+ *       200:
+ *         description: Pet photo successfully returned
+ *         content:
+ *           image/jpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Pet photo not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Photo not found.
+ *       500:
+ *         description: Server error while fetching photo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Server error fetching photo.
+ */
+
+
 
 /**
  * @swagger
@@ -1076,8 +1124,8 @@
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: ID of the pet to upload photo for
+
+ *         description: ID of the pet
  *     requestBody:
  *       required: true
  *       content:
@@ -1088,7 +1136,9 @@
  *               petPhoto:
  *                 type: string
  *                 format: binary
- *                 description: The photo file to upload for the pet.
+
+ *                 description: Photo file to upload
+ 
  *     responses:
  *       200:
  *         description: Pet photo uploaded successfully
@@ -1099,28 +1149,46 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 pet:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       format: uuid
- *                     name:
- *                       type: string
- *                     species:
- *                       type: string
- *                     photo_url:
- *                       type: string
- *                 photoUrl:
+
+ *                 petId:
  *                   type: string
  *       400:
- *         description: No photo file uploaded or file is not an image.
- *       401:
- *         description: Unauthorized - Token is missing or invalid.
+ *         description: No photo file uploaded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       403:
- *         description: Forbidden - User not authorized to update this pet.
+ *         description: Unauthorized to update this pet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       404:
- *         description: Pet not found.
+ *         description: Pet not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       500:
- *         description: Server error during photo upload.
+ *         description: Server error during photo upload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: string
  */
+
