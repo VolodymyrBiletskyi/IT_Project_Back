@@ -12,7 +12,7 @@ const authenticateToken = require('../middleware/authMiddleware'); // Assuming y
 router.post(
   '/:petId/photo',
   authenticateToken,
-  upload.single('petPhoto'), // поле из form-data: petPhoto
+  upload.single('petPhoto'), 
   async (req, res) => {
     const { petId } = req.params;
 
@@ -26,12 +26,12 @@ router.post(
         return res.status(404).json({ message: 'Pet not found.' });
       }
 
-      // Проверка, что текущий пользователь — владелец животного
+      // Check if user is owner of pet
       if (pet.owner_id !== req.user.id) {
         return res.status(403).json({ message: 'You are not authorized to update this pet.' });
       }
 
-      // Сохраняем фото в поле типа BLOB
+      // Saving photo type BLOB
       pet.photo = req.file.buffer;
       await pet.save();
 

@@ -39,6 +39,7 @@ const Pet = sequelize.define("Pet", {
     type: DataTypes.FLOAT,
     allowNull: true,
   },
+
   photo: {
     type: DataTypes.STRING,
     allowNull: true, // Or false if a photo is always required

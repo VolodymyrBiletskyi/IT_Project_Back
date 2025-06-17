@@ -1124,6 +1124,7 @@
  *         required: true
  *         schema:
  *           type: string
+
  *         description: ID of the pet
  *     requestBody:
  *       required: true
@@ -1135,7 +1136,9 @@
  *               petPhoto:
  *                 type: string
  *                 format: binary
+
  *                 description: Photo file to upload
+ 
  *     responses:
  *       200:
  *         description: Pet photo uploaded successfully
@@ -1146,6 +1149,7 @@
  *               properties:
  *                 message:
  *                   type: string
+
  *                 petId:
  *                   type: string
  *       400:
@@ -1187,3 +1191,4 @@
  *                 error:
  *                   type: string
  */
+
