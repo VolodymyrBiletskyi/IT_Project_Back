@@ -12,7 +12,7 @@ const DEFAULT_NEW_OWNER_PASSWORD = "Password123!";
 
 // Middleware to check if the user is a receptionist
 const isReceptionist = (req, res, next) => {
-  if (req.user && req.user.role === 'receptionist') {
+  if (req.user && req.user.role === 'receptionist' || "admin") {
     next();
   } else {
     res.status(403).json({ message: "Access denied. Receptionist role required." });
@@ -219,6 +219,20 @@ router.put('/appointments/:id', [authenticateToken, isReceptionist], async (req,
   } catch (err) {
     console.error('Error updating appointment:', err);
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+//get all appointments in system
+router.get('/appointments', authenticateToken, isReceptionist, async (req, res) => {
+  try {
+    const appointments = await Appointment.findAll({
+      include: ['specialist', 'user'], // adjust as needed
+    });
+
+    res.json(appointments);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ message: 'Server error while fetching appointments' });
   }
 });
 
