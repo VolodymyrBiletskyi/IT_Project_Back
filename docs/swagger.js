@@ -410,16 +410,16 @@
  *               phoneNumber:
  *                 type: string
  *               petId:
- *                 type: integer
+ *                 type: string
  *                 description: Optional if creating new pet
  *               species:
  *                 type: string
  *               breed:
  *                 type: string
  *               serviceId:
- *                 type: integer
+ *                 type: string
  *               specialistId:
- *                 type: integer
+ *                 type: string
  *               date:
  *                 type: string
  *                 format: date

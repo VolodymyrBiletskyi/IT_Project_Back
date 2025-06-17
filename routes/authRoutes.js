@@ -55,14 +55,17 @@ router.post("/login", async (req, res) => {
     const tokenPayload = {
       id: userOrSpecialist.id,
       email: userOrSpecialist.email,
-      role: userOrSpecialist.role, // Now this will be 'specialist' for specialists
+      role: userOrSpecialist.role,
     };
 
-    // Force the role to 'specialist' if the userType is specialist
+    // Force the role to 'admin' if the userType is specialist
     if (userType === 'specialist') {
+      tokenPayload.role = 'admin';
+    }
 
-      tokenPayload.role = 'doctor';
-
+    // Also force role to 'admin' if user is a receptionist
+    if (userType === 'user' && userOrSpecialist.role === 'receptionist') {
+      tokenPayload.role = 'admin';
     }
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: "1h" });
@@ -71,6 +74,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 router.post("/register", async (req, res) => {
