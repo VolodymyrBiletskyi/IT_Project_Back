@@ -1,3 +1,4 @@
+// to see the swagger use https://vet-clinic-backend.ew.r.appspot.com/api-docs
 /**
  * @swagger
  * /api/auth/register:
