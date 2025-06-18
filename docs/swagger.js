@@ -1363,6 +1363,7 @@
  *       500:
  *         description: Internal server error
  */
+
 /**
  * @swagger
  * /api/receptionist/pets/by-email:
@@ -1422,4 +1423,5 @@
  *       500:
  *         description: Internal server error.
  */
+
 
