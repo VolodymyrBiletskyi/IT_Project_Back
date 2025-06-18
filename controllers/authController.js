@@ -28,7 +28,7 @@ const requestPasswordReset = async (req, res) => {
       from: process.env.EMAIL,
       to: user.email,
       subject: "Password Reset Request",
-      text: `Click this link to reset your password: https://vet-clinic-backend.ew.r.appspot.com/auth/reset-password?token=${resetToken}`,
+      text: `Click this link to reset your password: https://localhost:3000/auth/reset-password?token=${resetToken}`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -79,17 +79,17 @@ const resetPassword = async (req, res) => {
 
 const deleteAccount = async (req, res) => {
   try {
-    const userId = req.user.id; // получаем ID из токена
+    const userId = req.user.id; // get ID from token
 
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Удаляем всех питомцев пользователя
+    // Delete all user pets
     await Pet.destroy({ where: { owner_id: user.id } });
 
-    // Удаляем самого пользователя
+    // We delete the user himself
     await user.destroy();
 
     res.json({ message: "Account and associated pets deleted successfully" });
