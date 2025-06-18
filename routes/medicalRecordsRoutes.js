@@ -182,7 +182,7 @@ router.get('/all', [authenticateToken, authorizeDoctor], async (req, res) => {
 });
 
 
-// PATCH /api/pets/:petId - Update core pet details (Owner or Admin Only)
+// PATCH /api/pets/:petId - Update core pet details (Doctor only)
 // This route remains unchanged from the previous state, only Owner/Admin can update pet details.
 router.patch('/:petId', [authenticateToken], async (req, res) => {
   const { petId } = req.params;
@@ -198,7 +198,7 @@ router.patch('/:petId', [authenticateToken], async (req, res) => {
 
     // 2. Authorization: Check if user is admin OR the owner
     const isOwner = pet.owner_id === loggedInUserId;
-    const isAdmin = userRole === 'admin'; // Ensure 'admin' is a valid role
+    const isAdmin = userRole ===  'doctor'; // Ensure 'admin' is a valid role
 
     if (!isAdmin && !isOwner) {
       return res.status(403).json({ message: "Forbidden: Only the pet owner or an admin can update these details." });

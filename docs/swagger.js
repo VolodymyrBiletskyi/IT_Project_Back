@@ -485,7 +485,7 @@
  * /api/pets/{petId}:
  *   patch:
  *     summary: Update pet information
- *     tags: [Receptionist]
+ *     tags: [Doctor]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -1363,4 +1363,65 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/receptionist/pets/by-email:
+ *   post:
+ *     summary: Find all pets by user email (receptionist only)
+ *     description: Allows a receptionist to retrieve all pets owned by a specific user based on the user's email address.
+ *     tags:
+ *       - Receptionist
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved pets for the given user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 owner:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                 pets:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         format: uuid
+ *                       name:
+ *                         type: string
+ *       400:
+ *         description: Missing email in request body.
+ *       404:
+ *         description: User not found or no pets for this user.
+ *       500:
+ *         description: Internal server error.
+ */
+
 

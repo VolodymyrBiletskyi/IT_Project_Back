@@ -236,4 +236,49 @@ router.get('/appointments', authenticateToken, isReceptionist, async (req, res) 
   }
 });
 
+//Find by user email all pets
+router.post('/pets/by-email', [authenticateToken, isReceptionist], async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "User email is required" });
+    }
+
+    // Найти пользователя по email
+    const user = await User.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Найти всех питомцев этого пользователя
+    const pets = await Pet.findAll({
+      where: { owner_id: user.id },
+      attributes: ['id', 'name'],
+    });
+
+    if (!pets || pets.length === 0) {
+      return res.status(404).json({ message: "No pets found for this user" });
+    }
+
+    res.json({
+      owner: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      pets,
+    });
+  } catch (err) {
+    console.error('Error fetching pets by email:', err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+
+
+
 module.exports = router;
