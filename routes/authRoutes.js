@@ -8,7 +8,6 @@ const { v4: uuidv4 } = require('uuid');
 const User = require("../models/User");
 const Pet = require("../models/Pet");
 const authenticateToken = require("../middleware/authMiddleware");
-const { deleteUser } = require("../controllers/userController");
 const req = require("express/lib/request");
 const mailer = require("../controllers/mailer");
 const { requestPasswordReset, resetPassword, deleteAccount } = require("../controllers/authController");
@@ -211,11 +210,22 @@ router.delete("/delete-account", authenticateToken, deleteAccount);
 
 router.get("/profile", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id; // ID extracted from JWT by the middleware
+    const userId = req.user.id;
+    const role = req.user.role;
 
-    const user = await User.findByPk(userId, {
-      attributes: ['id', 'name', 'email', 'phone'] // only safe/public fields
-    });
+    let user;
+
+    if (role === "doctor" || role === "specialist") {
+      // For specialists (role was mapped to 'doctor' on login)
+      user = await Specialist.findByPk(userId, {
+        attributes: ['id', 'name', 'email'] // adapt field names
+      });
+    } else {
+      // For users (admin, owner, receptionist, etc.)
+      user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'email', 'phone'] // safe/public fields
+      });
+    }
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

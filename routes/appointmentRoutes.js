@@ -352,7 +352,73 @@ router.get('/specialist/appointments', [authenticateToken], async (req, res) => 
   }
 });
 
+router.get('/specialist/appointments/on-time', [authenticateToken], async (req, res) => {
+  try {
+    const specialistId = req.user?.id;
+    const userRole = req.user?.role;
 
+    if (!specialistId || (userRole !== 'doctor' && userRole !== 'specialist')) {
+      return res.status(403).json({ message: "Unauthorized: Not a specialist" });
+    }
+
+    const appointments = await Appointment.findAll({
+      where: {
+        specialist_id: specialistId,
+        status: 'on time',
+      },
+      include: [
+        { model: Pet, as: 'pet', attributes: ['id', 'name', 'species', 'breed'] },
+        { model: Service, as: 'service', attributes: ['id', 'name'] },
+        { model: User, as: 'user', attributes: ['id', 'email', 'name'] },
+      ],
+      attributes: [
+        'id', 'full_name', 'email', 'phone_number', 'pet_id', 'pet_name',
+        'species', 'breed', 'service_id', 'specialist_id',
+        'date', 'time', 'status', 'createdAt', 'updatedAt',
+      ],
+      order: [['date', 'ASC'], ['time', 'ASC']],
+    });
+
+    res.status(200).json(appointments);
+  } catch (err) {
+    console.error('Error fetching confirmed appointments:', err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.get('/specialist/appointments/canceled', [authenticateToken], async (req, res) => {
+  try {
+    const specialistId = req.user?.id;
+    const userRole = req.user?.role;
+
+    if (!specialistId || (userRole !== 'doctor' && userRole !== 'specialist')) {
+      return res.status(403).json({ message: "Unauthorized: Not a specialist" });
+    }
+
+    const appointments = await Appointment.findAll({
+      where: {
+        specialist_id: specialistId,
+        status: 'canceled',
+      },
+      include: [
+        { model: Pet, as: 'pet', attributes: ['id', 'name', 'species', 'breed'] },
+        { model: Service, as: 'service', attributes: ['id', 'name'] },
+        { model: User, as: 'user', attributes: ['id', 'email', 'name'] },
+      ],
+      attributes: [
+        'id', 'full_name', 'email', 'phone_number', 'pet_id', 'pet_name',
+        'species', 'breed', 'service_id', 'specialist_id',
+        'date', 'time', 'status', 'createdAt', 'updatedAt',
+      ],
+      order: [['date', 'ASC'], ['time', 'ASC']],
+    });
+
+    res.status(200).json(appointments);
+  } catch (err) {
+    console.error('Error fetching cancelled appointments:', err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
 
 router.patch('/appointments/:appointmentId/status', [authenticateToken], async (req, res) => {
   const { appointmentId } = req.params;
@@ -368,7 +434,7 @@ router.patch('/appointments/:appointmentId/status', [authenticateToken], async (
 
   // 2. Validation: Check if status is provided and valid
   // Define the statuses you want to allow specialists to set
-  const allowedStatuses = ['pending', 'on time', 'completed', 'cancelled', 'delayed', 'no show'];
+  const allowedStatuses = ['pending', 'on time', 'completed', 'canceled', 'delayed', 'no show'];
   if (!status) {
     return res.status(400).json({ message: "Status is required in the request body." });
   }

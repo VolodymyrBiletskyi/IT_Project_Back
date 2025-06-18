@@ -579,7 +579,7 @@
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [pending, on time, completed, cancelled, delayed, no show]
+ *                 enum: ['pending', 'on time', 'completed', 'canceled', 'delayed', 'no show']
  *                 example: on time
  *     responses:
  *       200:
@@ -1245,5 +1245,122 @@
  *                 message:
  *                   type: string
  *                   example: Server error
+ */
+/**
+ * @swagger
+ * /api/specialist/appointments/on-time:
+ *   get:
+ *     summary: Get all confirmed appointments for the logged-in doctor
+ *     tags: [Doctor]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of confirmed appointments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   full_name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   phone_number:
+ *                     type: string
+ *                   pet_id:
+ *                     type: string
+ *                   pet_name:
+ *                     type: string
+ *                   species:
+ *                     type: string
+ *                   breed:
+ *                     type: string
+ *                   service_id:
+ *                     type: string
+ *                   specialist_id:
+ *                     type: string
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                   time:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *       401:
+ *         description: Unauthorized – missing or invalid token
+ *       403:
+ *         description: Forbidden – only doctors can access this route
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/specialist/appointments/canceled:
+ *   get:
+ *     summary: Get all cancelled appointments for the logged-in doctor
+ *     tags: [Doctor]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of cancelled appointments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   full_name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   phone_number:
+ *                     type: string
+ *                   pet_id:
+ *                     type: string
+ *                   pet_name:
+ *                     type: string
+ *                   species:
+ *                     type: string
+ *                   breed:
+ *                     type: string
+ *                   service_id:
+ *                     type: string
+ *                   specialist_id:
+ *                     type: string
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                   time:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *       401:
+ *         description: Unauthorized – missing or invalid token
+ *       403:
+ *         description: Forbidden – only doctors can access this route
+ *       500:
+ *         description: Internal server error
  */
 
