@@ -17,6 +17,7 @@ const receptionistRoutes = require('./routes/receptionistRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const path = require('path');
 const petRoutes = require('./routes/petRoutes');
+const specialistsRoutes = require('./routes/specialistRoutes');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/receptionist', receptionistRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/api/pets", petRoutes);
+app.use('/api/specialists', specialistsRoutes);
 
 
 app.get("/users", async (req, res) => {
@@ -74,7 +76,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: process.env.SWAGGER_URL || 'http://localhost:' + process.env.PORT,
+        url: 'http://localhost:' + process.env.PORT,
       },
     ],
     components: {

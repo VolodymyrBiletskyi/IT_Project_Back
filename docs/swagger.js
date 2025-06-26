@@ -527,7 +527,7 @@
  */
 /**
  * @swagger
- * /api/pets/all:
+ * /api/specialists/all:
  *   get:
  *     summary: Get all pets in system
  *     tags: [Doctor]
@@ -541,7 +541,7 @@
  */
 /**
  * @swagger
- * /api/specialist/appointments:
+ * /api/specialists/appointments:
  *   get:
  *     summary: Get appointments assigned to the doctor
  *     tags: [Doctor]
@@ -555,7 +555,7 @@
  */
 /**
  * @swagger
- * /api/appointments/{appointmentId}/status:
+ * /api/specialists/appointments/{appointmentId}/status:
  *   patch:
  *     summary: Update appointment status by specialist
  *     tags: [Doctor]
@@ -1248,7 +1248,7 @@
  */
 /**
  * @swagger
- * /api/specialist/appointments/on-time:
+ * /api/specialists/appointments/on-time:
  *   get:
  *     summary: Get all confirmed appointments for the logged-in doctor
  *     tags: [Doctor]
@@ -1307,7 +1307,7 @@
 
 /**
  * @swagger
- * /api/specialist/appointments/canceled:
+ * /api/specialists/appointments/canceled:
  *   get:
  *     summary: Get all cancelled appointments for the logged-in doctor
  *     tags: [Doctor]
@@ -1363,7 +1363,6 @@
  *       500:
  *         description: Internal server error
  */
-
 /**
  * @swagger
  * /api/receptionist/pets/by-email:
@@ -1423,5 +1422,4 @@
  *       500:
  *         description: Internal server error.
  */
-
 

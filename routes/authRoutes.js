@@ -1,21 +1,23 @@
+// routes/authRoutes.js
+
 const express = require("express");
 const jwt = require("jsonwebtoken");
-
-const nodemailer = require("nodemailer");
-const sendgrid = require ("nodemailer-sendgrid-transport");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const { v4: uuidv4 } = require('uuid');
+const { Op } = require("sequelize");
+require("dotenv").config();
+
+const router = express.Router();
+
 const User = require("../models/User");
 const Pet = require("../models/Pet");
-const authenticateToken = require("../middleware/authMiddleware");
-const req = require("express/lib/request");
-const mailer = require("../controllers/mailer");
-const { requestPasswordReset, resetPassword, deleteAccount } = require("../controllers/authController");
-require("dotenv").config();
-const router = express.Router();
 const Specialist = require("../models/Specialist");
+const authenticateToken = require("../middleware/authMiddleware");
+const mailer = require("../controllers/mailer");
 
-// Protected route example
+// --- Routes ---
+
 router.get("/protected", authenticateToken, (req, res) => {
   res.json({ message: "Access granted!", user: req.user });
 });
@@ -39,47 +41,23 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    let isMatch = false;
-    if (userType === "specialist") {
-      isMatch = await bcrypt.compare(password, userOrSpecialist.password);
-    } else {
-      isMatch = await userOrSpecialist.comparePassword(password);
-    }
-
+    const isMatch = await bcrypt.compare(password, userOrSpecialist.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token based on user type
     const tokenPayload = {
       id: userOrSpecialist.id,
       email: userOrSpecialist.email,
-      role: userOrSpecialist.role,
+      role: userType === 'specialist' ? 'doctor' : userOrSpecialist.role === 'receptionist' ? 'admin' : userOrSpecialist.role
     };
 
-
-
-    if (userType === 'specialist') {
-      tokenPayload.role = 'doctor';
-    }
-
-
-    // Also force role to 'admin' if user is a receptionist
-    if (userType === 'user' && userOrSpecialist.role === 'receptionist') {
-      tokenPayload.role = 'admin';
-    }
-
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({
-      token,
-      userType: tokenPayload.role,
-    });
+    res.json({ token, userType: tokenPayload.role });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
 
 router.post("/register", async (req, res) => {
   const { name, email, phone, password, role, petName, species, breed } = req.body;
@@ -94,43 +72,20 @@ router.post("/register", async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
 
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
-
-    const newUser = await User.create({
-      id: uuidv4(),
-      name,
-      email,
-      phone,
-      password,
-      role,
-    });
+    const newUser = await User.create({ id: uuidv4(), name, email, phone, password, role });
 
     if (role === "owner") {
-      console.log("Creating pet record...");
-      console.log("Pet model:", Pet);
-
-      await Pet.create({
-        id: uuidv4(),
-        owner_id: newUser.id,  // Use the new user's ID as the owner_id
-        name: petName,
-        species: species,
-        breed: breed,
-      });
-
-
-      console.log("Pet record created.");
+      await Pet.create({ id: uuidv4(), owner_id: newUser.id, name: petName, species, breed });
     }
 
-    mailer.sendMail({
+    await mailer.sendMail({
       to: newUser.email,
-      subject: "Welcome to the PawCare?",
-      html: "<h1> Your account was created successfully </h1>"
-    }).then ((response) => {
-      console.log("Email sent");
+      subject: "Welcome to PawCare",
+      html: "<h1>Your account was created successfully</h1>"
     });
+
     res.status(201).json(newUser);
   } catch (err) {
     console.error("Error during registration:", err);
@@ -138,60 +93,34 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
 router.put("/edit", authenticateToken, async (req, res) => {
   const { name, email, phone, password, role, petName, species, breed, age, gender, weight } = req.body;
-  const userId = req.user.id; // Get user ID from token
-
-  console.log("Update profile request for user:", userId);
+  const userId = req.user.id;
 
   try {
     const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Update user fields if provided
     if (name) user.name = name;
     if (email) user.email = email;
     if (phone) user.phone = phone;
-    if (role) {
-      const validRoles = ["admin", "doctor", "receptionist", "owner"];
-      if (!validRoles.includes(role)) {
-        return res.status(400).json({ message: "Invalid role provided" });
-      }
-      user.role = role;
-    }
-
-    // Handle password change separately
+    if (role && ["admin", "doctor", "receptionist", "owner"].includes(role)) user.role = role;
     if (password) {
-      console.log("Updating password...");
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
-
-    // Save updated user
     await user.save();
-    console.log("User profile updated successfully:", user);
 
-    // If the user is an owner, update their pet's details
     if (user.role === "owner") {
       const pet = await Pet.findOne({ where: { owner_id: userId } });
-
       if (pet) {
-        // Update pet fields if provided
         if (petName) pet.name = petName;
         if (species) pet.species = species;
         if (breed) pet.breed = breed;
         if (age) pet.age = age;
         if (gender) pet.gender = gender;
         if (weight) pet.weight = weight;
-
-        // Save updated pet
         await pet.save();
-        console.log("Pet details updated successfully:", pet);
-      } else {
-        console.log("No pet found for this owner.");
       }
     }
 
@@ -202,11 +131,83 @@ router.put("/edit", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/reset-password-request",requestPasswordReset);
+router.post("/reset-password-request", async (req, res) => {
+  const { email } = req.body;
 
-router.post("/reset-password",resetPassword);
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
 
-router.delete("/delete-account", authenticateToken, deleteAccount);
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetToken = resetToken;
+    user.resetTokenExpires = new Date(Date.now() + 3600000);
+    await user.save();
+
+    const resetUrl = `http://localhost:3000/auth/reset-password?token=${resetToken}`;
+    await mailer.sendMail({
+      to: user.email,
+      subject: "Password Reset Request",
+      text: `Click this link to reset your password: ${resetUrl}`,
+    });
+
+    res.json({ message: "Password reset link sent to email" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: "Token and new password are required" });
+  }
+
+  try {
+    const user = await User.findOne({
+      where: {
+        resetToken: token,
+        resetTokenExpires: { [Op.gt]: new Date() }
+      }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.resetToken = null;
+    user.resetTokenExpires = null;
+    await user.save();
+
+    res.json({ message: "Password has been reset successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.delete("/delete-account", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    await Pet.destroy({ where: { owner_id: user.id } });
+    await user.destroy();
+
+    res.json({ message: "Account and associated pets deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.get("/profile", authenticateToken, async (req, res) => {
   try {
@@ -214,27 +215,22 @@ router.get("/profile", authenticateToken, async (req, res) => {
     const role = req.user.role;
 
     let user;
-
     if (role === "doctor" || role === "specialist") {
-      // For specialists (role was mapped to 'doctor' on login)
       user = await Specialist.findByPk(userId, {
-        attributes: ['id', 'name', 'email'] // adapt field names
+        attributes: ['id', 'name', 'email']
       });
     } else {
-      // For users (admin, owner, receptionist, etc.)
       user = await User.findByPk(userId, {
-        attributes: ['id', 'name', 'email', 'phone'] // safe/public fields
+        attributes: ['id', 'name', 'email', 'phone']
       });
     }
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
     console.error("Error fetching user profile:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 module.exports = router;
