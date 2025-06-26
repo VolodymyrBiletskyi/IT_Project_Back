@@ -165,91 +165,9 @@ router.delete('/:petId/medical-record', [authenticateToken, authorizeDoctor], as
 });
 
 
-// GET /api/pets/all - Retrieve all pets (Doctor role required)
-router.get('/all', [authenticateToken, authorizeDoctor], async (req, res) => {
-  // authorizeDoctor ensures only doctors can proceed (doesn't need petId here)
-  try {
-    const pets = await Pet.findAll({
-      include: [{ model: User, as: 'owner', attributes: ['id', 'name', 'email', 'phone'] }],
-      attributes: ['id', 'name', 'species', 'breed', 'age', 'gender', 'weight', 'owner_id', 'createdAt', 'updatedAt'],
-      order: [['name', 'ASC']]
-    });
-    res.status(200).json(pets);
-  } catch (err) {
-    console.error("Error fetching all pets for doctor:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
 
 
-// PATCH /api/pets/:petId - Update core pet details (Doctor only)
-// This route remains unchanged from the previous state, only Owner/Admin can update pet details.
-router.patch('/:petId', [authenticateToken], async (req, res) => {
-  const { petId } = req.params;
-  const loggedInUserId = req.user.id;
-  const userRole = req.user.role;
 
-  try {
-    // 1. Find the pet first
-    const pet = await Pet.findByPk(petId);
-    if (!pet) {
-      return res.status(404).json({ message: "Pet not found." });
-    }
 
-    // 2. Authorization: Check if user is admin OR the owner
-    const isOwner = pet.owner_id === loggedInUserId;
-    const isAdmin = userRole ===  'doctor'; // Ensure 'admin' is a valid role
-
-    if (!isAdmin && !isOwner) {
-      return res.status(403).json({ message: "Forbidden: Only the pet owner or an admin can update these details." });
-    }
-
-    // --- User is authorized (Owner or Admin) ---
-
-    // 3. Extract allowed fields (excluding owner_id)
-    const { name, species, breed, age, gender, weight } = req.body;
-
-    // 4. Basic validation
-    const providedKeys = Object.keys(req.body);
-    const allowedUpdateKeys = ['name', 'species', 'breed', 'age', 'gender', 'weight'];
-    const validKeysProvided = providedKeys.some(key => allowedUpdateKeys.includes(key));
-
-    if (!validKeysProvided) {
-      if (providedKeys.includes('owner_id') && providedKeys.length === 1) {
-        return res.status(400).json({ message: "Owner ID cannot be changed via this endpoint. No other valid fields provided." });
-      }
-      return res.status(400).json({ message: "No valid update data provided (allowed fields: name, species, breed, age, gender, weight)." });
-    }
-
-    // 5. Build updateData
-    const updateData = {};
-    if (name !== undefined) updateData.name = name;
-    if (species !== undefined) updateData.species = species;
-    if (breed !== undefined) updateData.breed = breed;
-    if (age !== undefined) updateData.age = age;
-    if (gender !== undefined) updateData.gender = gender;
-    if (weight !== undefined) updateData.weight = weight;
-
-    if (Object.keys(updateData).length === 0) {
-      return res.status(400).json({ message: "No valid fields provided for update after filtering." });
-    }
-
-    // 6. Perform update
-    await pet.update(updateData);
-
-    // 7. Respond
-    const updatedPet = await Pet.findByPk(petId, {
-      include: [{ model: User, as: 'owner', attributes: ['id', 'name', 'email', 'phone'] }]
-    });
-    res.status(200).json(updatedPet);
-
-  } catch (err) {
-    console.error(`Error updating pet ${petId} by user ${loggedInUserId}:`, err);
-    if (err.name === 'SequelizeValidationError') {
-      return res.status(400).json({ message: "Validation Error", errors: err.errors.map(e => e.message) });
-    }
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
 
 module.exports = router;
